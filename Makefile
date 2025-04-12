@@ -39,7 +39,7 @@ OBJ_FILES := $(addprefix $(OBJ_DIR)/, $(addsuffix .o, $(SRC_FILES)))
 TEST_FILES := test1
 TEST_SRCS := $(addprefix $(TEST_DIR)/, $(addsuffix .c, $(TEST_FILES))) \
 			 $(SRC_DIR)/init.c \
-			 test_runner.c
+			 ./test_runner.c
 
 # ------------------------------------------------------------------------------
 # Cibles principales
