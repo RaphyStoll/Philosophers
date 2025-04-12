@@ -1,5 +1,4 @@
 philo
-tests
 *.out
 *.o
 test_runner
