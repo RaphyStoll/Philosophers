@@ -78,7 +78,9 @@ def main():
         print(f"\n{CYAN}🔧 Étape 1 : Compilation...{RESET}")
         write_header(report, "COMPILATION")
         compilation_failed = False
-        result = run_cmd("make test -C philo", log_path=LOG_DIR / "build.txt")
+        result = run_cmd(
+            "make test_runner -C test_philo", log_path=LOG_DIR / "build.txt"
+        )
         if result.returncode != 0:
             report.write("[KO]\n")
             write_header(report, "REMARQUES")
@@ -92,7 +94,7 @@ def main():
         if not compilation_failed:
             print(f"\n{CYAN}🔍 Étape 2 : Norminette...{RESET}")
             write_header(report, "NORMINETTE")
-            result = run_cmd("norminette philo", log_path=LOG_DIR / "norm.txt")
+            result = run_cmd("norminette test_philo", log_path=LOG_DIR / "norm.txt")
             if "Error" in result.stdout or "Error" in result.stderr:
                 report.write("[KO]\n")
                 write_header(report, "REMARQUES")
@@ -105,7 +107,7 @@ def main():
             print(f"\n{CYAN}🧪 Étape 3 : Exécution des tests...{RESET}")
             write_header(report, "TESTS")
             report.write("running test_runner ...\n")
-            result = run_cmd("./philo/test_runner", log_path=LOG_DIR / "tests.txt")
+            result = run_cmd("./test_philo/test_runner", log_path=LOG_DIR / "tests.txt")
             with open(LOG_DIR / "tests.txt") as test_log:
                 report.writelines(test_log.readlines())
 
@@ -113,7 +115,7 @@ def main():
             print(f"\n{CYAN}🧼 Étape 4 : Vérification mémoire (Valgrind)...{RESET}")
             write_header(report, "VALGRIND")
             result = run_cmd(
-                "valgrind --leak-check=full --error-exitcode=1 ./philo/test_runner",
+                "valgrind --leak-check=full --error-exitcode=1 ./test_philo/test_runner",
                 log_path=LOG_DIR / "valgrind.txt",
             )
             if result.returncode == 0:
