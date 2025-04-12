@@ -78,9 +78,7 @@ def main():
         print(f"\n{CYAN}🔧 Étape 1 : Compilation...{RESET}")
         write_header(report, "COMPILATION")
         compilation_failed = False
-        result = run_cmd(
-            "make test_runner -C test_philo", log_path=LOG_DIR / "build.txt"
-        )
+        result = run_cmd("make test_runner", log_path=LOG_DIR / "build.txt")
         if result.returncode != 0:
             report.write("[KO]\n")
             write_header(report, "REMARQUES")
