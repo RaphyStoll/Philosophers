@@ -24,6 +24,6 @@ jobs:
         sudo apt-get install -y valgrind gcc make python3 python3-pip jq
         pip install norminette
 
-	- name: Run test pipeline (Python script)
-	working-directory: ${{ github.workspace }}
-	run: python3 .github/script/tester.py
+    - name: Run test pipeline (Python script)
+      run: python3 .github/script/tester.py
+      working-directory: ${{ github.workspace }}
