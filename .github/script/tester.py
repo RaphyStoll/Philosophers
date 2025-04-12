@@ -24,7 +24,18 @@ SEPARATOR = f"{LIGHT_BLUE}━━━━━━━━━━━━━━━━━━
 LOG_DIR = Path("logs")
 LOG_DIR.mkdir(exist_ok=True)
 
-REPO_ROOT = Path(__file__).resolve().parents[2]
+try:
+    REPO_ROOT = Path(
+        subprocess.run(
+            "git rev-parse --show-toplevel",
+            shell=True,
+            capture_output=True,
+            text=True,
+            check=True,
+        ).stdout.strip()
+    )
+except subprocess.CalledProcessError:
+    REPO_ROOT = Path(__file__).resolve().parents[2]
 
 
 def write_header(f, title):
