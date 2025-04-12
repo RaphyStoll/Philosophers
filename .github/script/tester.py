@@ -1,6 +1,7 @@
 import subprocess
 import os
 from pathlib import Path
+import requests
 
 # Couleurs (inspirées de colors.h)
 RED = "\033[0;31m"
@@ -31,6 +32,33 @@ def run_cmd(cmd, log_path=None):
         with open(log_path, "w") as f:
             f.write(result.stdout + result.stderr)
     return result
+
+
+def build_discord_report(report_path):
+    lines = []
+    section = None
+    with open(report_path) as f:
+        for line in f:
+            line = line.strip()
+            if line.startswith("===="):
+                section = line.strip("= ").upper()
+                if section == "PHILOSOPHERS CI REPORT":
+                    lines.append("🌿 **PHILOSOPHERS CI REPORT**")
+                elif section == "COMPILATION":
+                    lines.append("\n📦 **COMPILATION**")
+                elif section == "NORMINETTE":
+                    lines.append("\n🔎 **NORMINETTE**")
+                elif section == "TESTS":
+                    lines.append("\n🧪 **TESTS**")
+                elif section == "VALGRIND":
+                    lines.append("\n🧼 **VALGRIND**")
+                elif section == "REMARQUES":
+                    lines.append("\n📌 **REMARQUES**")
+                elif section == "RESUMER":
+                    lines.append("\n📊 **RÉSUMÉ**")
+            elif line:
+                lines.append(line)
+    return "\n".join(lines)
 
 
 def main():
@@ -149,6 +177,21 @@ def main():
                 print(f"{WHITE}{line}{RESET}")
             elif line:
                 print(line)
+
+    webhook = os.getenv("DISCORD_WEBHOOK")
+    if webhook:
+        print(f"\n{CYAN}📡 Envoi du rapport vers Discord...{RESET}")
+        payload = {"content": build_discord_report(report_path)}
+        try:
+            response = requests.post(webhook, json=payload)
+            if response.status_code == 204:
+                print(f"{GREEN}✅ Rapport envoyé avec succès !{RESET}")
+            else:
+                print(
+                    f"{RED}❌ Échec de l'envoi Discord : {response.status_code}{RESET}"
+                )
+        except Exception as e:
+            print(f"{RED}❌ Exception Discord : {e}{RESET}")
 
 
 if __name__ == "__main__":
