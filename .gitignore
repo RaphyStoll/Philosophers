@@ -5,3 +5,4 @@ tests
 test_runner
 stdout
 tests.txt
+*.txt

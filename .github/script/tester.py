@@ -2,6 +2,8 @@ import subprocess
 import os
 from pathlib import Path
 import requests
+import platform
+import shlex
 
 # Couleurs (inspirées de colors.h)
 RED = "\033[0;31m"
@@ -22,16 +24,41 @@ SEPARATOR = f"{LIGHT_BLUE}━━━━━━━━━━━━━━━━━━
 LOG_DIR = Path("logs")
 LOG_DIR.mkdir(exist_ok=True)
 
+REPO_ROOT = Path(__file__).resolve().parents[2]
+
 
 def write_header(f, title):
     f.write(f"\n==== {title.upper()} ====\n")
 
 
-def run_cmd(cmd, log_path=None):
-    result = subprocess.run(cmd, shell=True, capture_output=True, text=True)
-    if log_path:
-        with open(log_path, "w") as f:
-            f.write(result.stdout + result.stderr)
+def run_cmd(cmd, log_path=None, timeout=30):
+    system = platform.system()
+    if "timeout" not in cmd:
+        if system == "Linux":
+            cmd = f"timeout {timeout}s {cmd}"
+        elif system == "Darwin":
+            cmd = f"gtimeout {timeout}s {cmd}"  # brew install coreutils
+
+    try:
+        result = subprocess.run(
+            cmd,
+            shell=True,
+            capture_output=True,
+            text=True,
+            cwd=REPO_ROOT,
+            timeout=timeout,
+        )
+    except subprocess.TimeoutExpired as e:
+        if log_path:
+            with open(log_path, "w") as f:
+                f.write(f"[TIMEOUT] Commande interrompue après {timeout} secondes\n")
+                if e.stdout:
+                    f.write(e.stdout)
+                if e.stderr:
+                    f.write(e.stderr)
+        result = subprocess.CompletedProcess(
+            cmd, returncode=124, stdout="[TIMEOUT]", stderr=str(e)
+        )
     return result
 
 
@@ -65,8 +92,8 @@ def build_discord_report(report_path):
 
 def main():
     print(f"{SEPARATOR}")
-    commit_hash = run_cmd("git rev-parse --short HEAD").stdout.strip()
-    commit_msg = run_cmd("git log -1 --pretty=%B").stdout.strip()
+    commit_hash = run_cmd("git rev-parse --short HEAD", timeout=30).stdout.strip()
+    commit_msg = run_cmd("git log -1 --pretty=%B", timeout=30).stdout.strip()
     print(f"{WHITE}📌 Commit : {commit_hash} - {commit_msg}{RESET}")
     print(f"{BOLD}{LIGHT_WHITE}🚀  Lancement du script tester.py{RESET}")
     print(f"{SEPARATOR}")
@@ -78,7 +105,7 @@ def main():
         print(f"\n{CYAN}🔧 Étape 1 : Compilation...{RESET}")
         write_header(report, "COMPILATION")
         compilation_failed = False
-        result = run_cmd("make test_runner", log_path=LOG_DIR / "build.txt")
+        result = run_cmd("make test_runner", log_path=LOG_DIR / "build.txt", timeout=30)
         if result.returncode != 0:
             report.write("[KO]\n")
             write_header(report, "REMARQUES")
@@ -92,7 +119,11 @@ def main():
         if not compilation_failed:
             print(f"\n{CYAN}🔍 Étape 2 : Norminette...{RESET}")
             write_header(report, "NORMINETTE")
-            result = run_cmd("norminette test_philo", log_path=LOG_DIR / "norm.txt")
+            result = run_cmd(
+                f"norminette \"{REPO_ROOT / 'sources'}\"",
+                log_path=LOG_DIR / "norm.txt",
+                timeout=30,
+            )
             if "Error" in result.stdout or "Error" in result.stderr:
                 report.write("[KO]\n")
                 write_header(report, "REMARQUES")
@@ -105,16 +136,26 @@ def main():
             print(f"\n{CYAN}🧪 Étape 3 : Exécution des tests...{RESET}")
             write_header(report, "TESTS")
             report.write("running test_runner ...\n")
-            result = run_cmd("./test_philo/test_runner", log_path=LOG_DIR / "tests.txt")
+            result = run_cmd(
+                "./test_runner", log_path=LOG_DIR / "tests.txt", timeout=30
+            )
             with open(LOG_DIR / "tests.txt") as test_log:
                 report.writelines(test_log.readlines())
 
             # Valgrind
             print(f"\n{CYAN}🧼 Étape 4 : Vérification mémoire (Valgrind)...{RESET}")
             write_header(report, "VALGRIND")
+            system = platform.system()
+            runner_path = REPO_ROOT / "test_runner"
+            escaped_runner_path = shlex.quote(str(runner_path))
+            valgrind_cmd = f"leaks -atExit -- {escaped_runner_path}"
+            if system == "Darwin":
+                valgrind_cmd = f"leaks -atExit -- {escaped_runner_path}"
+            else:
+                valgrind_cmd = f"valgrind --leak-check=full --error-exitcode=1 {escaped_runner_path}"
+
             result = run_cmd(
-                "valgrind --leak-check=full --error-exitcode=1 ./test_philo/test_runner",
-                log_path=LOG_DIR / "valgrind.txt",
+                valgrind_cmd, log_path=LOG_DIR / "valgrind.txt", timeout=30
             )
             if result.returncode == 0:
                 report.write("[OK]\n")
