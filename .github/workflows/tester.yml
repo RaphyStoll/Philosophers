@@ -11,6 +11,8 @@ jobs:
   ci:
     name: Compilation & Tests & Report
     runs-on: ubuntu-latest
+    env:
+      DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
 
     steps:
     - name: Checkout repository

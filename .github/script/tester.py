@@ -180,6 +180,14 @@ def main():
                 print(line)
 
     webhook = os.getenv("DISCORD_WEBHOOK")
+    if not webhook:
+        print(
+            f"{YELLOW}⚠️  Aucun webhook Discord détecté. Le rapport ne sera pas envoyé.{RESET}"
+        )
+        return
+    else:
+        print(f"{CYAN}📡 Webhook Discord détecté : {webhook}{RESET}")
+
     if webhook:
         print(f"\n{CYAN}📡 Envoi du rapport vers Discord...{RESET}")
         payload = {"content": build_discord_report(report_path)}
