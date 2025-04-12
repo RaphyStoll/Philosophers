@@ -25,16 +25,13 @@ jobs:
     - name: Run test pipeline (Python script)
       run: python3 .github/script/tester.py
 
-    - name: Send email report
-      uses: dawidd6/action-send-mail@v3
+    - name: Send CI report to Discord
       if: always()
-      with:
-        server_address: mail.infomaniak.com
-        server_port: 465
-        username: ${{ secrets.EMAIL_USERNAME }}
-        password: ${{ secrets.EMAIL_PASSWORD }}
-        subject: "philo report: ${{ github.event.head_commit.message }}"
-        to: raphael.ferreira@ik.me
-        from: raphael.ferreira@ik.me
-        body: |
-          $(cat logs/report.txt)
+      run: |
+        content="**Philo CI:** Job terminé. Résumé :"
+        body="$(tail -n 30 logs/report.txt)"
+        json="{\"content\": \"$content\n\`\`\`\n$body\n\`\`\`\"}"
+        curl -H "Content-Type: application/json" \
+             -X POST \
+             -d "$json" \
+             https://discord.com/api/webhooks/1360602188866392156/PpaA3UHTS9ARn-iX8mPfCOEAnUNXqzmPmwVYH_Rp_7gusu2CXqQeaqx94_1DOeCErVFd
