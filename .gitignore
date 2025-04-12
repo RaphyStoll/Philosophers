@@ -1,0 +1,4 @@
+philo
+tests
+*.out
+*.o
