@@ -3,3 +3,5 @@ tests
 *.out
 *.o
 test_runner
+stdout
+tests.txt

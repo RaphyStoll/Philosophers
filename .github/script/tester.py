@@ -41,6 +41,7 @@ def build_discord_report(report_path):
     with open(report_path) as f:
         for line in f:
             line = line.strip()
+            line = line.replace("[OK]", "🟢 [OK]").replace("[KO]", "🔴 [KO]")
             if line.startswith("===="):
                 section = line.strip("= ").upper()
                 if section == "PHILOSOPHERS CI REPORT":
