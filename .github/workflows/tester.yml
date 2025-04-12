@@ -5,6 +5,7 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   ci:
@@ -22,7 +23,7 @@ jobs:
         pip install norminette
 
     - name: Run test pipeline (Python script)
-      run: python3 run_tests.py
+      run: python3 .github/script/tester.py
 
     - name: Send email report
       uses: dawidd6/action-send-mail@v3
