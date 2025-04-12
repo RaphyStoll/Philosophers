@@ -24,15 +24,3 @@ jobs:
 
     - name: Run test pipeline (Python script)
       run: python3 .github/script/tester.py
-
-    - name: Send CI report to Discord
-      if: always()
-      run: |
-        content="**Philo CI:** Commit → ${{ github.event.head_commit.message }}"
-        body="$(tail -n 30 logs/report.txt)"
-        payload=$(jq -n --arg content "$content" --arg body "$body" \
-          '{content: "\($content)\n```\n\($body)\n```"}')
-        curl -H "Content-Type: application/json" \
-             -X POST \
-             -d "$payload" \
-             https://discord.com/api/webhooks/1360602188866392156/PpaA3UHTS9ARn-iX8mPfCOEAnUNXqzmPmwVYH_Rp_7gusu2CXqQeaqx94_1DOeCErVFd

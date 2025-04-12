@@ -15,6 +15,7 @@ LIGHT_BLUE = "\033[1;94m"
 LIGHT_WHITE = "\033[1;97m"
 RESET = "\033[0m"
 BOLD = "\033[1m"
+WHITE = "\033[0;37m"
 
 SEPARATOR = f"{LIGHT_BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━{RESET}"
 
