@@ -11,8 +11,11 @@ CYAN = "\033[0;36m"
 LIGHT_RED = "\033[1;91m"
 LIGHT_GREEN = "\033[1;92m"
 LIGHT_BLUE = "\033[1;94m"
+LIGHT_WHITE = "\033[1;97m"
 RESET = "\033[0m"
 BOLD = "\033[1m"
+
+SEPARATOR = f"{LIGHT_BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━{RESET}"
 
 LOG_DIR = Path("logs")
 LOG_DIR.mkdir(exist_ok=True)
@@ -31,12 +34,14 @@ def run_cmd(cmd, log_path=None):
 
 
 def main():
-    print(f"{BOLD}{BLUE}==> Démarrage du script tester.py{RESET}")
+    print(f"{SEPARATOR}")
+    print(f"{BOLD}{LIGHT_WHITE}🚀  Lancement du script tester.py{RESET}")
+    print(f"{SEPARATOR}")
     report_path = LOG_DIR / "report.txt"
     with open(report_path, "w") as report:
         report.write("==== PHILOSOPHERS CI REPORT ====\n")
         # Compilation
-        print(f"{CYAN}⏳ Compilation en cours...{RESET}")
+        print(f"\n{CYAN}🔧 Étape 1 : Compilation...{RESET}")
         write_header(report, "COMPILATION")
         compilation_failed = False
         result = run_cmd("make test -C philo", log_path=LOG_DIR / "build.txt")
@@ -51,7 +56,7 @@ def main():
 
         # Norminette
         if not compilation_failed:
-            print(f"{CYAN}🔎 Analyse norminette...{RESET}")
+            print(f"\n{CYAN}🔍 Étape 2 : Norminette...{RESET}")
             write_header(report, "NORMINETTE")
             result = run_cmd("norminette philo", log_path=LOG_DIR / "norm.txt")
             if "Error" in result.stdout or "Error" in result.stderr:
@@ -63,7 +68,7 @@ def main():
                 report.write("[OK]\n")
 
             # Tests
-            print(f"{CYAN}🧪 Lancement des tests...{RESET}")
+            print(f"\n{CYAN}🧪 Étape 3 : Exécution des tests...{RESET}")
             write_header(report, "TESTS")
             report.write("running test_runner ...\n")
             result = run_cmd("./philo/test_runner", log_path=LOG_DIR / "tests.txt")
@@ -71,7 +76,7 @@ def main():
                 report.writelines(test_log.readlines())
 
             # Valgrind
-            print(f"{CYAN}🧼 Vérification mémoire avec Valgrind...{RESET}")
+            print(f"\n{CYAN}🧼 Étape 4 : Vérification mémoire (Valgrind)...{RESET}")
             write_header(report, "VALGRIND")
             result = run_cmd(
                 "valgrind --leak-check=full --error-exitcode=1 ./philo/test_runner",
@@ -87,8 +92,10 @@ def main():
                     report.writelines(val_log.readlines())
 
         # Résumé
-        print(f"{BLUE}📋 Compilation du résumé...{RESET}")
+        print(f"\n{CYAN}📋 Étape 5 : Génération du rapport...{RESET}")
         write_header(report, "RESUMER")
+        ok_count = 0
+        ko_count = 0
         if compilation_failed:
             report.write("Tests non exécutés (compilation échouée)\n")
         else:
@@ -96,9 +103,52 @@ def main():
                 for line in test_log:
                     if "[TEST" in line:
                         report.write(line)
+                    elif "[OK]" in line:
+                        print(f"{BOLD}{GREEN}[OK]{RESET}")
+                        ok_count += 1
+                    elif "[KO]" in line:
+                        print(f"{BOLD}{RED}[KO]{RESET}")
+                        ko_count += 1
 
-    print(f"\n{BOLD}{GREEN}==== RÉSUMÉ CONSOLE ===={RESET}")
-    print(report_path.read_text())
+    print(f"\n{SEPARATOR}")
+    print(f"{BOLD}{LIGHT_WHITE}📊  RÉSUMÉ CONSOLE{RESET}")
+    print(f"{SEPARATOR}")
+    print(SEPARATOR)
+    print(
+        f"{BOLD}✅ Tests réussis : {GREEN}{ok_count} OK{RESET}  ❌ Échecs : {RED}{ko_count} KO{RESET}"
+    )
+    print(SEPARATOR)
+
+    print(f"\n{SEPARATOR}")
+    print(f"{BOLD}{LIGHT_WHITE}📄  DÉTAIL DU RAPPORT{RESET}")
+    print(f"{SEPARATOR}")
+
+    section = None
+    with open(report_path) as f:
+        for line in f:
+            line = line.strip()
+            if line.startswith("===="):
+                section = line.strip("= ").upper()
+                if section == "COMPILATION":
+                    print(f"\n{CYAN}📦 COMPILATION :{RESET}")
+                elif section == "NORMINETTE":
+                    print(f"\n{CYAN}🔎 NORMINETTE :{RESET}")
+                elif section == "TESTS":
+                    print(f"\n{CYAN}🧪 TESTS :{RESET}")
+                elif section == "VALGRIND":
+                    print(f"\n{CYAN}🧼 VALGRIND :{RESET}")
+                elif section == "REMARQUES":
+                    print(f"\n{YELLOW}📌 REMARQUES :{RESET}")
+                elif section == "RESUMER":
+                    print(f"\n{SEPARATOR}")
+            elif "[OK]" in line:
+                print(f"{BOLD}{GREEN}[OK]{RESET}")
+            elif "[KO]" in line:
+                print(f"{BOLD}{RED}[KO]{RESET}")
+            elif "[TEST" in line:
+                print(f"{WHITE}{line}{RESET}")
+            elif line:
+                print(line)
 
 
 if __name__ == "__main__":

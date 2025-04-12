@@ -1,11 +1,9 @@
 #include <stdio.h>
-#include "colors.h"
+#include <stdlib.h>
+#include <time.h>
 
-// Déclarations des fonctions de test
 int test1(void);
-int test_example2(void);
 
-// Structure pour mapper nom <-> fonction
 typedef struct s_test {
 	const char *name;
 	int (*func)(void);
@@ -17,16 +15,24 @@ int main(void) {
 		{ NULL, NULL }
 	};
 
-	for (int i = 0; tests[i].name != NULL; ++i) {
-		printf(BOLD CYAN "→ Running test %d...%s\n" RESET, i + 1, "");
-		printf(YELLOW "Test name: %s\n" RESET, tests[i].name);
-		int res = tests[i].func();
-		printf(LIGHT_BLUE "valgrind\n" RESET);
-		printf("[TEST %d] [%s%s%s]\n\n",
-			i + 1,
-			res == 0 ? GREEN : RED,
-			res == 0 ? "OK" : "KO",
-			RESET);
+	FILE *log_file = fopen("logs/tests.txt", "w");
+	if (!log_file) {
+		perror("Erreur ouverture logs/tests.txt");
+		return 1;
 	}
-	return 0;
+
+	int failed = 0;
+	for (int i = 0; tests[i].name != NULL; ++i) {
+		clock_t start = clock();
+		int res = tests[i].func();
+		clock_t end = clock();
+		double duration = (double)(end - start) / CLOCKS_PER_SEC;
+		fprintf(log_file, "[TEST %d] %s [%s] (%.2fs)\n", i + 1, tests[i].name,
+			res == 0 ? "OK" : "KO", duration);
+		if (res != 0)
+			failed = 1;
+	}
+
+	fclose(log_file);
+	return failed;
 }

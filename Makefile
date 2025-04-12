@@ -11,7 +11,7 @@ LDFLAGS     = -lpthread
 SRC_DIR     = sources
 OBJ_DIR     = objects
 INC_DIR     = header
-TEST_DIR    = test
+TEST_DIR    = tests
 OUTPUT_DIR  = output
 
 INCLUDES    = -I$(INC_DIR)
