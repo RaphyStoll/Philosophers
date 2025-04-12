@@ -64,10 +64,14 @@ def build_discord_report(report_path):
 
 def main():
     print(f"{SEPARATOR}")
+    commit_hash = run_cmd("git rev-parse --short HEAD").stdout.strip()
+    commit_msg = run_cmd("git log -1 --pretty=%B").stdout.strip()
+    print(f"{WHITE}📌 Commit : {commit_hash} - {commit_msg}{RESET}")
     print(f"{BOLD}{LIGHT_WHITE}🚀  Lancement du script tester.py{RESET}")
     print(f"{SEPARATOR}")
     report_path = LOG_DIR / "report.txt"
     with open(report_path, "w") as report:
+        report.write(f"Commit : {commit_hash} - {commit_msg}\n")
         report.write("==== PHILOSOPHERS CI REPORT ====\n")
         # Compilation
         print(f"\n{CYAN}🔧 Étape 1 : Compilation...{RESET}")
