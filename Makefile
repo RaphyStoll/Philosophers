@@ -11,7 +11,7 @@ LDFLAGS     = -lpthread
 SRC_DIR     = sources
 OBJ_DIR     = objects
 INC_DIR     = header
-TEST_DIR    = tests
+TEST_DIR    = test
 OUTPUT_DIR  = output
 
 INCLUDES    = -I$(INC_DIR)
@@ -92,4 +92,4 @@ re: fclean all
 # Phony
 # ------------------------------------------------------------------------------
 
-.PHONY: all clean fclean re tests test_runner
+.PHONY: all clean fclean re tests
