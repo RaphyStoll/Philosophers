@@ -33,8 +33,8 @@ jobs:
         server_port: 465
         username: ${{ secrets.EMAIL_USERNAME }}
         password: ${{ secrets.EMAIL_PASSWORD }}
-        subject: "Philosophers CI Report"
-        to: ${{ secrets.EMAIL_USERNAME }}
-        from: GitHub CI <${{ secrets.EMAIL_USERNAME }}>
+        subject: "philo report: ${{ github.event.head_commit.message }}"
+        to: raphael.ferreira@ik.me
+        from: raphael.ferreira@ik.me
         body: |
           $(cat logs/report.txt)
