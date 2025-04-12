@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include "colors.h"
 
 // Déclarations des fonctions de test
 int test1(void);
@@ -17,11 +18,15 @@ int main(void) {
 	};
 
 	for (int i = 0; tests[i].name != NULL; ++i) {
-		printf("running test %d ....\n", i + 1);
-		printf("test %s\n", tests[i].name);
+		printf(BOLD CYAN "→ Running test %d...%s\n" RESET, i + 1, "");
+		printf(YELLOW "Test name: %s\n" RESET, tests[i].name);
 		int res = tests[i].func();
-		printf("valgrind\n");
-		printf("[TEST %d] [%s]\n\n", i + 1, res == 0 ? "OK" : "KO");
+		printf(LIGHT_BLUE "valgrind\n" RESET);
+		printf("[TEST %d] [%s%s%s]\n\n",
+			i + 1,
+			res == 0 ? GREEN : RED,
+			res == 0 ? "OK" : "KO",
+			RESET);
 	}
 	return 0;
 }

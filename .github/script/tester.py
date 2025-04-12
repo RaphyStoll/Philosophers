@@ -2,6 +2,18 @@ import subprocess
 import os
 from pathlib import Path
 
+# Couleurs (inspirées de colors.h)
+RED = "\033[0;31m"
+GREEN = "\033[0;32m"
+YELLOW = "\033[0;33m"
+BLUE = "\033[0;34m"
+CYAN = "\033[0;36m"
+LIGHT_RED = "\033[1;91m"
+LIGHT_GREEN = "\033[1;92m"
+LIGHT_BLUE = "\033[1;94m"
+RESET = "\033[0m"
+BOLD = "\033[1m"
+
 LOG_DIR = Path("logs")
 LOG_DIR.mkdir(exist_ok=True)
 
@@ -19,11 +31,12 @@ def run_cmd(cmd, log_path=None):
 
 
 def main():
-    print("==> Démarrage du script tester.py")
+    print(f"{BOLD}{BLUE}==> Démarrage du script tester.py{RESET}")
     report_path = LOG_DIR / "report.txt"
     with open(report_path, "w") as report:
         report.write("==== PHILOSOPHERS CI REPORT ====\n")
         # Compilation
+        print(f"{CYAN}⏳ Compilation en cours...{RESET}")
         write_header(report, "COMPILATION")
         compilation_failed = False
         result = run_cmd("make test -C philo", log_path=LOG_DIR / "build.txt")
@@ -38,6 +51,7 @@ def main():
 
         # Norminette
         if not compilation_failed:
+            print(f"{CYAN}🔎 Analyse norminette...{RESET}")
             write_header(report, "NORMINETTE")
             result = run_cmd("norminette philo", log_path=LOG_DIR / "norm.txt")
             if "Error" in result.stdout or "Error" in result.stderr:
@@ -49,6 +63,7 @@ def main():
                 report.write("[OK]\n")
 
             # Tests
+            print(f"{CYAN}🧪 Lancement des tests...{RESET}")
             write_header(report, "TESTS")
             report.write("running test_runner ...\n")
             result = run_cmd("./philo/test_runner", log_path=LOG_DIR / "tests.txt")
@@ -56,6 +71,7 @@ def main():
                 report.writelines(test_log.readlines())
 
             # Valgrind
+            print(f"{CYAN}🧼 Vérification mémoire avec Valgrind...{RESET}")
             write_header(report, "VALGRIND")
             result = run_cmd(
                 "valgrind --leak-check=full --error-exitcode=1 ./philo/test_runner",
@@ -71,6 +87,7 @@ def main():
                     report.writelines(val_log.readlines())
 
         # Résumé
+        print(f"{BLUE}📋 Compilation du résumé...{RESET}")
         write_header(report, "RESUMER")
         if compilation_failed:
             report.write("Tests non exécutés (compilation échouée)\n")
@@ -80,7 +97,7 @@ def main():
                     if "[TEST" in line:
                         report.write(line)
 
-    print("\n==== RÉSUMÉ CONSOLE ====")
+    print(f"\n{BOLD}{GREEN}==== RÉSUMÉ CONSOLE ===={RESET}")
     print(report_path.read_text())
 
 
