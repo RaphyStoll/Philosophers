@@ -19,7 +19,7 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y valgrind gcc make python3 python3-pip
+        sudo apt-get install -y valgrind gcc make python3 python3-pip jq
         pip install norminette
 
     - name: Run test pipeline (Python script)
@@ -30,8 +30,9 @@ jobs:
       run: |
         content="**Philo CI:** Job terminé. Résumé :"
         body="$(tail -n 30 logs/report.txt)"
-        json="{\"content\": \"$content\n\`\`\`\n$body\n\`\`\`\"}"
+        payload=$(jq -n --arg content "$content" --arg body "$body" \
+          '{content: "\($content)\n```\n\($body)\n```"}')
         curl -H "Content-Type: application/json" \
              -X POST \
-             -d "$json" \
+             -d "$payload" \
              https://discord.com/api/webhooks/1360602188866392156/PpaA3UHTS9ARn-iX8mPfCOEAnUNXqzmPmwVYH_Rp_7gusu2CXqQeaqx94_1DOeCErVFd
