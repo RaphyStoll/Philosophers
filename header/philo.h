@@ -3,7 +3,7 @@
 # define PHILO_H
 # include <pthread.h>
 # include <stdlib.h>
-
+# include <stdbool.h>
 typedef struct s_philo
 {
     int             id;
@@ -32,5 +32,6 @@ typedef struct s_data
 
 
 t_philo	*create_philos(t_data *data);
+bool	parse_arg(int argc, char **argv);
 
 #endif
