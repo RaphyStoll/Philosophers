@@ -49,7 +49,7 @@ int main(void) {
 		close(stderr_copy);
 
 		double duration = (double)(end - start) / CLOCKS_PER_SEC;
-		fprintf(log_file, "[TEST %d] %s [%s] (%.2fs)\n\n", i + 1, tests[i].name,
+		fprintf(log_file, "%d. %s [%s] (%.2fs)\n\n", i + 1, tests[i].name,
 			res == 0 ? "OK" : "KO", duration);
 		if (res != 0)
 			failed = 1;
