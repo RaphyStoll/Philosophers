@@ -32,11 +32,11 @@ BOLD        = \033[1m
 # Sources & Objets
 # ------------------------------------------------------------------------------
 
-SRC_FILES := main init utils
+SRC_FILES := main init utils memory mini_libft parsing_utils parsing print_help
 OBJ_FILES := $(addprefix $(OBJ_DIR)/, $(addsuffix .o, $(SRC_FILES)))
 
 # Tests
-TEST_FILES := test1 test2 test3
+TEST_FILES := test1 test2 test3 test4
 TEST_SRCS := $(addprefix $(TEST_DIR)/, $(addsuffix .c, $(TEST_FILES))) \
 			 $(SRC_DIR)/init.c \
 			 $(SRC_DIR)/utils.c \
