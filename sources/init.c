@@ -1,4 +1,66 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   init.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: raphaelferreira <raphaelferreira@studen    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/07 15:02:52 by raphaelferr       #+#    #+#             */
+/*   Updated: 2025/05/08 00:35:00 by raphaelferr      ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
+
+static bool	init_mutexes(t_data *data)
+{
+	data->mutex = malloc(sizeof(t_mutexes));
+	if (!data->mutex)
+		return (free_data(data), error_msg("Error: malloc mutexes failed"));
+	data->mutex->print_lock_initialized = false;
+	data->mutex->death_mutex_initialized = false;
+	data->mutex->fed_mutex_initialized = false;
+	if (pthread_mutex_init(&data->mutex->print_lock, NULL) != 0)
+		return (free_data(data), error_msg("Error: print_lock init failed"));
+	data->mutex->print_lock_initialized = true;
+	if (pthread_mutex_init(&data->mutex->death_mutex, NULL) != 0)
+		return (free_data(data), error_msg("Error: death_mutex init failed"));
+	data->mutex->death_mutex_initialized = true;
+	if (pthread_mutex_init(&data->mutex->fed_mutex, NULL) != 0)
+		return (free_data(data), error_msg("Error: fed_mutex init failed"));
+	data->mutex->fed_mutex_initialized = true;
+	return (true);
+}
+
+static bool	init_flags(t_data *data)
+{
+	data->flags = malloc(sizeof(t_flags));
+	if (!data->flags)
+		return (free_data(data), error_msg("Error: malloc flags failed"));
+	*data->flags = (t_flags){false, false, false, false, false, false};
+	return (true);
+}
+
+t_data	*init_default_data(t_data *data)
+{
+
+	data->nb_philo = 0;
+	data->time_to_die = 0;
+	data->time_to_eat = 0;
+	data->time_to_sleep = 0;
+	data->must_eat_count = -1;
+	data->forks = NULL;
+	data->philos = NULL;
+	data->start_time = 0;
+	data->fed_count = 0;
+	data->is_dead = false;
+	data->simulation_end = false;
+	data->mutex = NULL;
+	data->flags = NULL;
+	if (!init_mutexes(data) || !init_flags(data))
+		return (NULL);
+	return (data);
+}
 
 static t_philo	*init_philo(t_data *data, int i)
 {
