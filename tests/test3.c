@@ -32,7 +32,7 @@ int test_error_msg_output(const char *input)
     return (0);
 }
 
-int main(void)
+int test3(void)
 {
     int fails = 0;
 
