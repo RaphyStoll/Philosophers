@@ -36,7 +36,7 @@ SRC_FILES := main init
 OBJ_FILES := $(addprefix $(OBJ_DIR)/, $(addsuffix .o, $(SRC_FILES)))
 
 # Tests
-TEST_FILES := test1
+TEST_FILES := test1 test2 test3
 TEST_SRCS := $(addprefix $(TEST_DIR)/, $(addsuffix .c, $(TEST_FILES))) \
 			 $(SRC_DIR)/init.c \
 			 ./test_runner.c
