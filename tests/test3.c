@@ -13,13 +13,15 @@ int test_error_msg_output(const char *input)
 
     if (pipe(pipefd) == -1)
         return (1);
+    fcntl(pipefd[0], F_SETFL, O_NONBLOCK);
     dup2(pipefd[1], STDERR_FILENO);
     close(pipefd[1]);
 
     error_msg(input);
 
     fflush(stderr);
-    read(pipefd[0], buffer, sizeof(buffer) - 1);
+    ssize_t r = read(pipefd[0], buffer, sizeof(buffer) - 1);
+    if (r <= 0) buffer[0] = '\0';
     close(pipefd[0]);
     dup2(saved_stderr, STDERR_FILENO);
     close(saved_stderr);
