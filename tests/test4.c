@@ -57,7 +57,7 @@ int test_strcmp_long_equal_strings(void)
 	return !test_strcmp_case("long test string", "long test string", "long equal strings");
 }
 
-void test4(void)
+int test4(void)
 {
 	int failures = 0;
 
