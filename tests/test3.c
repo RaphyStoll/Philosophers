@@ -44,7 +44,6 @@ int test3(void)
 
     if (fails == 0)
     {
-        write(1, "✅ All error_msg output tests passed.\n", 38);
         return (0);
     }
     else
