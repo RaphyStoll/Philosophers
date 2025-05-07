@@ -2,6 +2,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include "test.h"
 
 int error_msg(const char *msg);
 
@@ -34,21 +35,28 @@ int test_error_msg_output(const char *input)
     return (0);
 }
 
+int base_string(void)
+{
+	return test_error_msg_output("Erreur critique\n");
+}
+
+int	empty_string(void)
+{
+	return test_error_msg_output("");
+}
+
+int big_string(void)
+{
+	return test_error_msg_output("Une erreur très longue avec plein de détails : valeur X invalide, paramètre Y manquant, etc.\n");
+}
+
 int test3(void)
 {
-    int fails = 0;
+	int failures = 0;
 
-    fails += test_error_msg_output("Erreur critique\n");
-    fails += test_error_msg_output("");
-    fails += test_error_msg_output("Une erreur très longue avec plein de détails : valeur X invalide, paramètre Y manquant, etc.\n");
+	RUN_SUBTEST("base_string", base_string);
+	RUN_SUBTEST("empty_string", empty_string);
+	RUN_SUBTEST("big_string", big_string);
 
-    if (fails == 0)
-    {
-        return (0);
-    }
-    else
-    {
-        fprintf(stderr, "%d test(s) failed.\n", fails);
-        return (1);
-    }
+	return (failures);
 }
