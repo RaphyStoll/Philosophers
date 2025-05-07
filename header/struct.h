@@ -1,5 +1,20 @@
-# include <pthread.h>
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   struct.h                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: raphaelferreira <raphaelferreira@studen    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/08 01:25:00 by raphaelferr       #+#    #+#             */
+/*   Updated: 2025/05/08 01:25:03 by raphaelferr      ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
+#ifndef STRUCT_H
+# define STRUCT_H
+
+# include <pthread.h>
+# include "stdbool.h"
 typedef struct s_philo
 {
 	int				id;
@@ -47,3 +62,5 @@ typedef struct s_data
 	int				fed_count;
 	bool			simulation_end;
 }   t_data;
+
+#endif
