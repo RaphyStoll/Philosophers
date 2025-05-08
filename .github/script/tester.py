@@ -197,7 +197,7 @@ def main():
                 report.write("[KO]\n")
                 write_header(report, "REMARQUES")
                 report.write("Fuites mémoire détectées :\n")
-                with open(LOG_DIR / "valgrind.txt", "a") as val_log:
+                with open(LOG_DIR / "valgrind.txt", "r") as val_log:
                     report.writelines(val_log.readlines())
 
         # Résumé
