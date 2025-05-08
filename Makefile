@@ -40,6 +40,8 @@ TEST_FILES := test1 test2 test3 test4
 TEST_SRCS := $(addprefix $(TEST_DIR)/, $(addsuffix .c, $(TEST_FILES))) \
 			 $(SRC_DIR)/init.c \
 			 $(SRC_DIR)/utils.c \
+			 $(SRC_DIR)/mini_libft.c \
+			 $(SRC_DIR)/memory.c \
 			 ./test_runner.c
 
 # ------------------------------------------------------------------------------
@@ -70,7 +72,7 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 
 test_runner: $(TEST_SRCS)
 	@echo "$(CYAN)→ Building test runner...$(RESET)"
-	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^ $(LDFLAGS)
+	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^ $(LDFLAGS) 
 
 tests: test_runner
 	./test_runner

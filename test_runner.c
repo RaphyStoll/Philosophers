@@ -17,6 +17,7 @@ t_test tests[] = {
     { "[test init] structure t_data", test1 },
 	{ "[test utils] ft_strlen", test2 } ,
 	{ "[test utils] error_msg", test3 },
+	{ "[test utils] ft_strcmp", test4},
     { NULL, NULL }
 };
 

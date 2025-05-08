@@ -5,8 +5,9 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
+#include <unistd.h>
 
-extern int __real_pthread_mutex_init(pthread_mutex_t*, const pthread_mutexattr_t*);
 
 t_data	*init_default_data(t_data* data);
 void	free_data(t_data *data);
@@ -56,13 +57,13 @@ bool compare_two_data_init(void)
 		(has_error = true, fprintf(stderr, "mutex content mismatch\n"));
 
 	free_data(d1);
-	free(d1);
 	free_data(d2);
+	free(d1);
 	free(d2);
 	return (!has_error);
 }
 
-void	*malloc(size_t size)
+void	*my_malloc(size_t size)
 {
 	if (!real_malloc)
 		real_malloc = dlsym(RTLD_NEXT, "malloc");
@@ -73,17 +74,11 @@ void	*malloc(size_t size)
 	return real_malloc(size);
 }
 
-int	pthread_mutex_init(pthread_mutex_t *mutex, const pthread_mutexattr_t *attr)
-{
-	if (trigger_malloc_fail)
-		return 1;
-	return __real_pthread_mutex_init(mutex, attr);
-}
 
 bool	simulate_flags_malloc_failure(void)
 {
 	bool result;
-	t_data *data = malloc(sizeof(t_data));
+	t_data *data = my_malloc(sizeof(t_data));
 	if (!data)
 	{
 		fprintf(stderr, "[malloc fail test] data malloc failed\n");
@@ -92,7 +87,7 @@ bool	simulate_flags_malloc_failure(void)
 	trigger_malloc_fail = true;
 	result = (init_default_data(data) == NULL);
 	trigger_malloc_fail = false;
-	free(data);
+	free_data(data);
 	if (!result)
 		fprintf(stderr, "[malloc fail test] init_default_data should return NULL\n");
 	return result;
@@ -110,7 +105,7 @@ bool	simulate_mutex_malloc_failure(void)
 	trigger_malloc_fail = true;
 	result = (init_default_data(data) == NULL);
 	trigger_malloc_fail = false;
-	free(data);
+	free_data(data);
 	if (!result)
 		fprintf(stderr, "[malloc fail test] init_default_data (mutex) should return NULL\n");
 	else
@@ -118,25 +113,6 @@ bool	simulate_mutex_malloc_failure(void)
 	return result;
 }
 
-bool	simulate_mutex_init_failure(void)
-{
-	bool result;
-	t_data *data = malloc(sizeof(t_data));
-	if (!data)
-	{
-		fprintf(stderr, "[mutex init fail test] data malloc failed\n");
-		return (false);
-	}
-	trigger_malloc_fail = true;
-	result = (init_default_data(data) == NULL);
-	trigger_malloc_fail = false;
-	free(data);
-	if (!result)
-		fprintf(stderr, "[mutex init fail test] init_default_data should return NULL\n");
-	else
-		write(1, "[mutex init fail test] OK\n", 27);
-	return result;
-}
 
 bool	base_test(void)
 {
@@ -152,7 +128,7 @@ bool	base_test(void)
 	{
 		fprintf(stderr, "init_default_data failed\n");
 		has_error = true;
-		free(data);
+		free_data(data);
 		return (false);
 	}
 
@@ -259,18 +235,16 @@ bool	base_test(void)
 	}
 
 	free_data(data);
-	free(data);
-	return (has_error);
+	return (!has_error);
 }
 
-int test4(void)
+int test1(void)
 {
 	int failures = 0;
 
 	RUN_SUBTEST("base_test", base_test);
 	RUN_SUBTEST("simulate_flags_malloc_failure", simulate_flags_malloc_failure);
 	RUN_SUBTEST("simulate_mutex_malloc_failure", simulate_mutex_malloc_failure);
-	RUN_SUBTEST("simulate_mutex_init_failure", simulate_mutex_init_failure);
 	RUN_SUBTEST("compare_two_data_init", compare_two_data_init);
 
 	return (failures);

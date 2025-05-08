@@ -6,11 +6,12 @@
 /*   By: raphaelferreira <raphaelferreira@studen    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 16:25:23 by raphaelferr       #+#    #+#             */
-/*   Updated: 2025/05/07 23:39:13 by raphaelferr      ###   ########.fr       */
+/*   Updated: 2025/05/08 01:29:29 by raphaelferr      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
 size_t	ft_strlen(const char *str)
 {
 	size_t	i;
