@@ -54,6 +54,7 @@ int test_long_text(void)
 
 int test2(void)
 {
+	
 	int failures = 0;
 
 	RUN_SUBTEST("test_empty_string", test_empty_string);
@@ -63,6 +64,6 @@ int test2(void)
 	RUN_SUBTEST("test_spaces_only", test_spaces_only);
 	RUN_SUBTEST("test_escaped_chars", test_escaped_chars);
 	RUN_SUBTEST("test_long_text", test_long_text);
-
+	
 	return (failures);
 }

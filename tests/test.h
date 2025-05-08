@@ -10,4 +10,6 @@
 		failures += !result; \
 	} while (0)
 
+# define PL() printf("→ %s:%d\n", __FILE__, __LINE__)
+
 #endif

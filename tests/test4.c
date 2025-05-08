@@ -59,6 +59,7 @@ int test_strcmp_long_equal_strings(void)
 
 int test4(void)
 {
+	
 	int failures = 0;
 
 	RUN_SUBTEST("test_strcmp_equal_strings", test_strcmp_equal_strings);
@@ -69,6 +70,6 @@ int test4(void)
 	RUN_SUBTEST("test_strcmp_diff_last_char_inv", test_strcmp_diff_last_char_inv);
 	RUN_SUBTEST("test_strcmp_completely_different", test_strcmp_completely_different);
 	RUN_SUBTEST("test_strcmp_long_equal_strings", test_strcmp_long_equal_strings);
-
+	
 	return (failures);
 }

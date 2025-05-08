@@ -54,7 +54,8 @@ def run_cmd(cmd, log_path=None, timeout=30):
         result = subprocess.run(
             cmd,
             shell=True,
-            capture_output=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
             text=True,
             cwd=REPO_ROOT,
             timeout=timeout,
@@ -147,11 +148,33 @@ def main():
             print(f"\n{CYAN}🧪 Étape 3 : Exécution des tests...{RESET}")
             write_header(report, "TESTS")
             report.write("running test_runner ...\n")
-            result = run_cmd(
-                "./test_runner", log_path=LOG_DIR / "tests.txt", timeout=30
-            )
-            with open(LOG_DIR / "tests.txt") as test_log:
-                report.writelines(test_log.readlines())
+            test_log_path = LOG_DIR / "tests.txt"
+            result = run_cmd("./test_runner", log_path=test_log_path, timeout=30)
+            if result.returncode != 0:
+                print(
+                    f"{RED}❌ test_runner a échoué avec le code de retour {result.returncode}{RESET}"
+                )
+                if result.returncode == -6:
+                    print(f"{RED}💥 Abort signal (SIGABRT, code -6){RESET}")
+                if result.returncode == 134:
+                    print(
+                        f"{RED}💥 Abort signal (code 134) — possible double free, assert ou abort(){RESET}"
+                    )
+                elif result.returncode == 139:
+                    print(f"{RED}💥 Segmentation fault (code 139){RESET}")
+                elif result.returncode == 124:
+                    print(f"{RED}⏱ Timeout (code 124){RESET}")
+            if test_log_path.exists():
+                with open(test_log_path) as test_log:
+                    report.writelines(test_log.readlines())
+            else:
+                report.write("[KO]\n")
+                write_header(report, "REMARQUES")
+                report.write("Le fichier tests.txt n'a pas été généré.\n")
+                report.write("stderr test_runner:\n")
+                report.write(result.stderr)
+                report.write("\nstdout test_runner:\n")
+                report.write(result.stdout)
 
             # Valgrind
             print(f"\n{CYAN}🧼 Étape 4 : Vérification mémoire (Valgrind)...{RESET}")
@@ -174,7 +197,7 @@ def main():
                 report.write("[KO]\n")
                 write_header(report, "REMARQUES")
                 report.write("Fuites mémoire détectées :\n")
-                with open(LOG_DIR / "valgrind.txt") as val_log:
+                with open(LOG_DIR / "valgrind.txt", "a") as val_log:
                     report.writelines(val_log.readlines())
 
         # Résumé
@@ -185,16 +208,22 @@ def main():
         if compilation_failed:
             report.write("Tests non exécutés (compilation échouée)\n")
         else:
-            with open(LOG_DIR / "tests.txt") as test_log:
-                for line in test_log:
-                    if "[TEST" in line:
-                        report.write(line)
-                    elif "[OK]" in line:
-                        print(f"{BOLD}{GREEN}[OK]{RESET}")
-                        ok_count += 1
-                    elif "[KO]" in line:
-                        print(f"{BOLD}{RED}[KO]{RESET}")
-                        ko_count += 1
+            test_log_path = LOG_DIR / "tests.txt"
+            if test_log_path.exists():
+                with open(test_log_path) as test_log:
+                    for line in test_log:
+                        if "[TEST" in line:
+                            report.write(line)
+                        elif "[OK]" in line:
+                            print(f"{BOLD}{GREEN}[OK]{RESET}")
+                            ok_count += 1
+                        elif "[KO]" in line:
+                            print(f"{BOLD}{RED}[KO]{RESET}")
+                            ko_count += 1
+            else:
+                print(
+                    f"{YELLOW}⚠️  Le fichier tests.txt est manquant pour le résumé.{RESET}"
+                )
 
     print(f"\n{SEPARATOR}")
     print(f"{BOLD}{LIGHT_WHITE}📊  RÉSUMÉ CONSOLE{RESET}")

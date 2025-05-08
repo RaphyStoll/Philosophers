@@ -1,7 +1,6 @@
 #define _GNU_SOURCE
 #include "test.h"
 #include "../header/struct.h"
-#include <dlfcn.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -11,9 +10,6 @@
 
 t_data	*init_default_data(t_data* data);
 void	free_data(t_data *data);
-
-static void	*(*real_malloc)(size_t) = NULL;
-static bool	trigger_malloc_fail = false;
 
 // Compare two t_data after init_default_data, checking scalar equality,
 // pointer inequality for flags/mutex, and content equality.
@@ -25,9 +21,7 @@ bool compare_two_data_init(void)
 		return (fprintf(stderr, "malloc failed\n"), false);
 	if (!init_default_data(d1) || !init_default_data(d2))
 		return (fprintf(stderr, "init_default_data failed\n"), false);
-
 	bool has_error = false;
-
 	if (d1->nb_philo != d2->nb_philo)
 		(has_error = true, fprintf(stderr, "nb_philo mismatch\n"));
 	if (d1->time_to_die != d2->time_to_die)
@@ -50,43 +44,35 @@ bool compare_two_data_init(void)
 	if (d1->mutex == d2->mutex)
 		(has_error = true, fprintf(stderr, "mutex pointers are equal\n"));
 
-	if (memcmp(d1->flags, d2->flags, sizeof(t_flags)) != 0)
+	if (d1->flags && d2->flags &&
+		memcmp(d1->flags, d2->flags, sizeof(t_flags)) != 0)
 		(has_error = true, fprintf(stderr, "flags content mismatch\n"));
+	else if (!d1->flags || !d2->flags)
+		(has_error = true, fprintf(stderr, "flags is NULL\n"));
 
-	if (memcmp(d1->mutex, d2->mutex, sizeof(t_mutexes)) != 0)
+	if (d1->mutex && d2->mutex &&
+		memcmp(d1->mutex, d2->mutex, sizeof(t_mutexes)) != 0)
 		(has_error = true, fprintf(stderr, "mutex content mismatch\n"));
+	else if (!d1->mutex || !d2->mutex)
+		(has_error = true, fprintf(stderr, "mutex is NULL\n"));
 
 	free_data(d1);
 	free_data(d2);
-	free(d1);
-	free(d2);
 	return (!has_error);
-}
-
-void	*my_malloc(size_t size)
-{
-	if (!real_malloc)
-		real_malloc = dlsym(RTLD_NEXT, "malloc");
-	if (trigger_malloc_fail && size == sizeof(t_flags))
-		return (NULL);
-	if (trigger_malloc_fail && size == sizeof(t_mutexes))
-		return (NULL);
-	return real_malloc(size);
 }
 
 
 bool	simulate_flags_malloc_failure(void)
 {
 	bool result;
-	t_data *data = my_malloc(sizeof(t_data));
+	t_data *data = malloc(sizeof(t_data));
 	if (!data)
 	{
 		fprintf(stderr, "[malloc fail test] data malloc failed\n");
 		return (false);
 	}
-	trigger_malloc_fail = true;
+	data->flags = NULL;
 	result = (init_default_data(data) == NULL);
-	trigger_malloc_fail = false;
 	free_data(data);
 	if (!result)
 		fprintf(stderr, "[malloc fail test] init_default_data should return NULL\n");
@@ -102,9 +88,8 @@ bool	simulate_mutex_malloc_failure(void)
 		fprintf(stderr, "[malloc fail test] data malloc failed\n");
 		return (false);
 	}
-	trigger_malloc_fail = true;
+	data->mutex = NULL;
 	result = (init_default_data(data) == NULL);
-	trigger_malloc_fail = false;
 	free_data(data);
 	if (!result)
 		fprintf(stderr, "[malloc fail test] init_default_data (mutex) should return NULL\n");

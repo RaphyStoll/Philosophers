@@ -52,11 +52,12 @@ int big_string(void)
 
 int test3(void)
 {
+	
 	int failures = 0;
 
 	RUN_SUBTEST("base_string", base_string);
 	RUN_SUBTEST("empty_string", empty_string);
 	RUN_SUBTEST("big_string", big_string);
-
+	
 	return (failures);
 }
