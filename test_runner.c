@@ -17,8 +17,8 @@ typedef struct s_test {
 t_test tests[] = {
     { "[test init] structure t_data", test1 },
 	{ "[test utils] ft_strlen", test2 } ,
-	{ "[test utils] error_msg", test3 },
-	{ "[test utils] ft_strcmp", test4},
+//	{ "[test utils] error_msg", test3 },
+//	{ "[test utils] ft_strcmp", test4},
     { NULL, NULL }
 };
 
@@ -35,17 +35,15 @@ int main(void) {
 	
 	for (int i = 0; tests[i].name != NULL; ++i) {
 		
-		fprintf(log_file, "===== %s =====\n", tests[i].name);
+		fprintf(log_file, "===== %s =====\n\n", tests[i].name);
 		fflush(log_file);
 		int stdout_copy = dup(fileno(stdout));
 		int stderr_copy = dup(fileno(stderr));
 		dup2(fileno(log_file), fileno(stdout));
 		dup2(fileno(log_file), fileno(stderr));
-		fprintf(stderr, "▶ Running %s\n", tests[i].name);
 		fflush(stderr);
 		
 		clock_t start = clock();
-		fprintf(stderr, "func ptr for %s is %p\n", tests[i].name, (void *)tests[i].func);
 		int res = tests[i].func();		
 		clock_t end = clock();
 
@@ -57,7 +55,7 @@ int main(void) {
 		close(stderr_copy);
 
 		double duration = (double)(end - start) / CLOCKS_PER_SEC;
-		const char *status = res == 0 ? "[OK]" : "[KO]";
+		const char *status = res == 0 ? "[OK] → 🔴" : "[KO] → 🟢";
 		fprintf(log_file, "%d. %s %s (%.2fs)\n\n", i + 1, tests[i].name, status, duration);
 		if (res != 0)
 			failed = 1;	

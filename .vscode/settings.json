@@ -1,0 +1,14 @@
+{
+	"files.associations": {
+		"philo.h": "c",
+		"array": "c",
+		"string": "c",
+		"string_view": "c",
+		"vector": "c",
+		"sstream": "c",
+		"colors.h": "c",
+		"__locale": "cpp",
+		"struct.h": "c",
+		"ios": "c"
+	}
+}

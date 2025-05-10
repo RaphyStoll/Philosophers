@@ -6,7 +6,7 @@
 # define RUN_SUBTEST(name, func) do { \
 		printf("----- %s -----\n", name); \
 		int result = func(); \
-		printf("result: %s\n\n", result ? "OK" : "KO"); \
+		printf("result: %s\n\n", result ? "KO 🔴" : "OK 🟢"); \
 		failures += !result; \
 	} while (0)
 

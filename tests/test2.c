@@ -11,7 +11,7 @@ int test_strlen_case(const char *input, const char *label)
 	size_t actual = ft_strlen(input);
 	if (expected != actual)
 	{
-		fprintf(stderr, "FAIL [%s]: ft_strlen(\"%s\") = %zu (expected %zu)\n",
+		printf(" > FAIL [%s]: ft_strlen(\"%s\") = %zu (expected %zu)\n",
 			label, input, actual, expected);
 		return 1;
 	}
