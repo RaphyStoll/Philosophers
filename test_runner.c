@@ -8,6 +8,7 @@ int test1(void);
 int test2(void);
 int test3(void);
 int test4(void);
+int test5(void);
 
 typedef struct s_test {
 	const char *name;
@@ -17,8 +18,9 @@ typedef struct s_test {
 t_test tests[] = {
     { "[test init] structure t_data", test1 },
 	{ "[test utils] ft_strlen", test2 } ,
-//	{ "[test utils] error_msg", test3 },
-//	{ "[test utils] ft_strcmp", test4},
+	{ "[test utils] error_msg", test3 },
+	{ "[test utils] ft_strcmp", test4},
+	{ "[test utils] is_flag", test5},
     { NULL, NULL }
 };
 

@@ -5,3 +5,4 @@ test_runner
 stdout
 tests.txt
 *.txt
+tmp_err.log

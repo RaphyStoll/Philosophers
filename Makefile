@@ -36,12 +36,14 @@ SRC_FILES := main init utils memory mini_libft parsing_utils parsing print_help
 OBJ_FILES := $(addprefix $(OBJ_DIR)/, $(addsuffix .o, $(SRC_FILES)))
 
 # Tests
-TEST_FILES := test1 test2 test3 test4
+TEST_FILES := test1 test2 test3 test4 test5
 TEST_SRCS := $(addprefix $(TEST_DIR)/, $(addsuffix .c, $(TEST_FILES))) \
 			 $(SRC_DIR)/init.c \
-			 $(SRC_DIR)/utils.c \
-			 $(SRC_DIR)/mini_libft.c \
 			 $(SRC_DIR)/memory.c \
+			 $(SRC_DIR)/mini_libft.c \
+			 $(SRC_DIR)/parsing_utils.c \
+			 $(SRC_DIR)/print_help.c \
+			 $(SRC_DIR)/utils.c \
 			 ./test_runner.c
 
 # ------------------------------------------------------------------------------
