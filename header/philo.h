@@ -6,7 +6,7 @@
 /*   By: raphaelferreira <raphaelferreira@studen    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 01:24:57 by raphaelferr       #+#    #+#             */
-/*   Updated: 2025/05/08 01:24:59 by raphaelferr      ###   ########.fr       */
+/*   Updated: 2025/05/18 14:17:23 by raphaelferr      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,10 +46,5 @@ size_t	ft_strlen(const char *str);
 bool	is_digit(char *str);
 int		ft_strcmp(char *s1, char *s2);
 
-//! parsing_utils
-bool	is_flag(t_flags *flags, char *str);
-
-//! print help
-void	print_help(void);
 
 #endif
