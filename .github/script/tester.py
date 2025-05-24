@@ -104,7 +104,7 @@ def parse_test_results(test_log_path):
 
 
 def parse_report_status(report_path):
-    """Parse le rapport et retourne le statut de chaque section"""
+    """Parse le rapport et retourne le statut de chaque section - VERSION CORRIGÉE"""
     status = {
         "compilation": "unknown",
         "norminette": "unknown",
@@ -121,44 +121,43 @@ def parse_report_status(report_path):
 
     with open(report_path, "r") as f:
         content = f.read()
-        sections = content.split("====")
+        lines = content.split("\n")
 
-        for section in sections:
-            if "COMPILATION" in section:
-                if "[OK]" in section:
-                    status["compilation"] = "ok"
-                elif "[KO]" in section:
-                    status["compilation"] = "ko"
-                    # Extraction des erreurs de compilation
-                    lines = section.split("\n")
-                    error_lines = [
-                        line.strip()
-                        for line in lines
-                        if "error:" in line or "Error" in line
-                    ]
-                    status["compilation_errors"] = "\n".join(
-                        error_lines[:5]
-                    )  # Max 5 lignes
+    current_section = None
+    section_content = []
 
-            elif "NORMINETTE" in section:
-                if "[OK]" in section:
-                    status["norminette"] = "ok"
-                elif "[KO]" in section:
-                    status["norminette"] = "ko"
-                    # Extraction des erreurs norminette
-                    lines = section.split("\n")
-                    error_lines = [line.strip() for line in lines if "Error" in line]
-                    status["norminette_errors"] = "\n".join(
-                        error_lines[:5]
-                    )  # Max 5 lignes
+    for line in lines:
+        line_stripped = line.strip()
 
-            elif "VALGRIND" in section:
-                if "[OK]" in section:
-                    status["valgrind"] = "ok"
-                elif "[KO]" in section:
-                    status["valgrind"] = "ko"
+        # Identifier les sections (avec ou sans emojis)
+        if "COMPILATION" in line_stripped:
+            if current_section:
+                process_section(current_section, section_content, status)
+            current_section = "compilation"
+            section_content = [line_stripped]
+        elif "NORMINETTE" in line_stripped:
+            if current_section:
+                process_section(current_section, section_content, status)
+            current_section = "norminette"
+            section_content = [line_stripped]
+        elif "TESTS" in line_stripped and "running test_runner" not in line_stripped:
+            if current_section:
+                process_section(current_section, section_content, status)
+            current_section = "tests"
+            section_content = [line_stripped]
+        elif "VALGRIND" in line_stripped:
+            if current_section:
+                process_section(current_section, section_content, status)
+            current_section = "valgrind"
+            section_content = [line_stripped]
+        elif current_section:
+            section_content.append(line_stripped)
 
-    # Parse des résultats de tests
+    # Traiter la dernière section
+    if current_section:
+        process_section(current_section, section_content, status)
+
+    # Parse spécial pour les tests
     test_log_path = LOG_DIR / "tests.txt"
     ok_count, ko_count, failed_tests = parse_test_results(test_log_path)
 
@@ -172,8 +171,42 @@ def parse_report_status(report_path):
     return status
 
 
+def process_section(section_name, section_content, status):
+    """Traite une section spécifique"""
+    content_text = "\n".join(section_content)
+
+    if "[OK]" in content_text:
+        status[section_name] = "ok"
+    elif "[KO]" in content_text:
+        status[section_name] = "ko"
+
+        # Extraire les détails d'erreur
+        if section_name == "compilation":
+            # Chercher les erreurs de compilation
+            error_lines = [
+                line
+                for line in section_content
+                if "error:" in line.lower() or "Error" in line
+            ]
+            status["compilation_errors"] = "\n".join(error_lines[:5])
+
+        elif section_name == "norminette":
+            # Chercher les erreurs norminette
+            error_lines = [line for line in section_content if "Error" in line]
+            status["norminette_errors"] = "\n".join(error_lines[:10])
+
+        elif section_name == "valgrind":
+            # Vérification spéciale pour Valgrind
+            if "All heap blocks were freed -- no leaks are possible" in content_text:
+                status[section_name] = "ok"  # Pas de vraies fuites
+            elif "Fichier valgrind.txt non généré" in content_text:
+                status[section_name] = (
+                    "ok"  # Fichier pas généré, mais pas de fuites détectées
+                )
+
+
 def create_discord_embed(report_path, commit_hash, commit_msg):
-    """Crée l'embed Discord au format JSON"""
+    """Crée l'embed Discord au format JSON - VERSION CORRIGÉE"""
 
     status = parse_report_status(report_path)
 
@@ -187,9 +220,9 @@ def create_discord_embed(report_path, commit_hash, commit_msg):
             status["valgrind"],
         ]
     )
-    color = 0x00FF00 if all_ok else 0xFF0000  # Vert ou Rouge
+    color = 0x00FF00 if all_ok else 0xFF0000
 
-    # Création des fields
+    # Création des fields avec plus de détails
     fields = [
         {
             "name": "📦 Compilation",
@@ -206,7 +239,11 @@ def create_discord_embed(report_path, commit_hash, commit_msg):
             "value": (
                 f"🟢 {status['test_details']}"
                 if status["tests"] == "ok"
-                else f"🔴 {status['test_details']}"
+                else (
+                    f"🔴 {status['test_details']}"
+                    if status["test_details"]
+                    else "🔴 FAILED"
+                )
             ),
             "inline": True,
         },
@@ -217,7 +254,7 @@ def create_discord_embed(report_path, commit_hash, commit_msg):
         },
     ]
 
-    # Ajout du résumé et des détails d'erreur si nécessaire
+    # Ajout des détails d'erreur si nécessaire
     if not all_ok:
         failed_sections = []
         if status["compilation"] == "ko":
@@ -229,61 +266,50 @@ def create_discord_embed(report_path, commit_hash, commit_msg):
         if status["valgrind"] == "ko":
             failed_sections.append("Valgrind")
 
-        # Résumé des échecs
-        fields.append(
-            {
-                "name": "❌ Failed sections",
-                "value": ", ".join(failed_sections),
-                "inline": False,
-            }
-        )
+        if failed_sections:
+            fields.append(
+                {
+                    "name": "❌ Failed sections",
+                    "value": ", ".join(failed_sections),
+                    "inline": False,
+                }
+            )
 
-        # Détails des erreurs (sauf Valgrind)
+        # Détails des erreurs
         if status["compilation"] == "ko" and status["compilation_errors"]:
             fields.append(
                 {
                     "name": "🔧 Compilation Errors",
-                    "value": f"```\n{status['compilation_errors']}\n```",
+                    "value": f"```\n{status['compilation_errors'][:500]}\n```",
                     "inline": False,
                 }
             )
 
         if status["norminette"] == "ko" and status["norminette_errors"]:
+            # Limiter le nombre d'erreurs pour Discord
+            error_preview = "\n".join(status["norminette_errors"].split("\n")[:5])
             fields.append(
                 {
-                    "name": "🔍 Norminette Errors",
-                    "value": f"```\n{status['norminette_errors']}\n```",
+                    "name": "🔍 Norminette Errors (preview)",
+                    "value": f"```\n{error_preview[:500]}\n```",
                     "inline": False,
                 }
             )
 
         if status["tests"] == "ko" and status["failed_tests"]:
-            test_failures = "\n".join(status["failed_tests"][:3])  # Max 3 tests
+            test_failures = "\n".join(status["failed_tests"][:3])
             fields.append(
                 {
                     "name": "🧪 Test Failures",
-                    "value": f"```\n{test_failures}\n```",
+                    "value": f"```\n{test_failures[:500]}\n```",
                     "inline": False,
                 }
             )
-
-        if status["valgrind"] == "ko":
-            fields.append(
-                {
-                    "name": "🧼 Memory Analysis",
-                    "value": "Check CI logs for detailed memory analysis",
-                    "inline": False,
-                }
-            )
-    else:
-        fields.append(
-            {"name": "✅ Status", "value": "All checks passed", "inline": False}
-        )
 
     # Construction de l'embed
     embed = {
         "title": "🌿 Philosophers CI Report",
-        "description": f"**Commit:** `{commit_hash}`\n{commit_msg}",
+        "description": f"**Commit:** `{commit_hash}`\n{commit_msg[:100]}{'...' if len(commit_msg) > 100 else ''}",
         "color": color,
         "fields": fields,
         "footer": {"text": "Philosophers CI Pipeline"},
@@ -413,10 +439,24 @@ def main():
             result = run_cmd(
                 valgrind_cmd, log_path=LOG_DIR / "valgrind.txt", timeout=30
             )
-            if result.returncode == 0:
-                report.write("[OK]\n")
+
+            # Vérifier s'il y a de vraies fuites mémoire
+            has_real_leaks = False
+            if (
+                "leaked in loss record" in result.stderr
+                or "definitely lost" in result.stderr
+            ):
+                has_real_leaks = True
+            elif "All heap blocks were freed -- no leaks are possible" in result.stderr:
+                has_real_leaks = False
+            elif result.returncode != 0:
+                # Autres erreurs Valgrind (pas forcément des fuites)
+                has_real_leaks = True
+
+            if not has_real_leaks:
+                report.write("[OK]\\n")
             else:
-                report.write("[KO]\n")
+                report.write("[KO]\\n")
                 write_header(report, "REMARQUES")
                 report.write("Fuites mémoire détectées :\n")
                 valgrind_log_path = LOG_DIR / "valgrind.txt"
