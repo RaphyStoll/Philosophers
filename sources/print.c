@@ -5,14 +5,14 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: raphaelferreira <raphaelferreira@studen    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/24 00:00:00 by raphaelferr       #+#    #+#             */
-/*   Updated: 2025/05/24 15:20:28 by raphaelferr      ###   ########.fr       */
+/*   Created: 2025/05/24 16:52:41 by raphaelferr       #+#    #+#             */
+/*   Updated: 2025/05/24 16:52:43 by raphaelferr      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-static bool	is_simulation_running(t_data *data)
+bool	is_simulation_running(t_data *data)
 {
 	bool	result;
 
@@ -28,13 +28,6 @@ void	print_status(t_philo *philo, char *status)
 
 	if (!is_simulation_running(philo->data))
 		return ;
-# ifdef ANIMATION
-	if (philo->data->flags->animate)
-	{
-		print_status_animated(philo, status);
-		return ;
-	}
-# endif
 	pthread_mutex_lock(&philo->data->mutex->print_lock);
 	if (is_simulation_running(philo->data))
 	{

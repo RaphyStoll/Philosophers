@@ -5,105 +5,71 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: raphaelferreira <raphaelferreira@studen    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/24 00:00:00 by raphaelferr       #+#    #+#             */
-/*   Updated: 2025/05/24 15:20:20 by raphaelferr      ###   ########.fr       */
+/*   Created: 2025/05/24 16:52:09 by raphaelferr       #+#    #+#             */
+/*   Updated: 2025/05/24 16:52:11 by raphaelferr      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-static void	end_simulation(t_data *data)
+void	free_data(t_data *data)
 {
-	pthread_mutex_lock(&data->mutex->death_mutex);
-	data->simulation_end = true;
-	pthread_mutex_unlock(&data->mutex->death_mutex);
+	if (!data)
+		return;
+	if (data->flags)
+		free_flags(data->flags);
+	if (data->philos)
+		free_philo(data->philos);
+	if (data->forks)
+		free(data->forks);
+	if (data->mutex)
+		free_mutexes(data->mutex);
+	if (data)
+		free(data);
 }
 
-static bool	check_death(t_philo *philo)
+void	free_flags(t_flags *flags)
 {
-	long long	time_since_meal;
-	long long	current_time;
-
-	current_time = get_time();
-	time_since_meal = current_time - philo->last_meal;
-	if (time_since_meal >= philo->data->time_to_die)
-	{
-# ifdef ANIMATION
-		if (philo->data->flags->animate)
-		{
-			print_status_animated(philo, "died");
-		}
-		else
-		{
-# endif
-			pthread_mutex_lock(&philo->data->mutex->print_lock);
-			printf("%lld %d died\n", current_time - philo->data->start_time, philo->id);
-			pthread_mutex_unlock(&philo->data->mutex->print_lock);
-# ifdef ANIMATION
-		}
-# endif
-		end_simulation(philo->data);
-		return (true);
-	}
-	return (false);
+		if (flags)
+		free(flags);
 }
 
-static bool	all_philosophers_fed(t_data *data)
+void	free_philo(t_philo *philo)
 {
-	t_philo	*current;
-	int		fed_count;
-	int		i;
-
-	if (data->must_eat_count == -1)
-		return (false);
-	fed_count = 0;
-	current = data->philos;
-	i = 0;
-	while (i < data->nb_philo)
+	t_philo *tmp;
+	t_philo *next;
+	if (!philo)
+		return;
+	tmp = philo->next;
+	while (tmp && tmp != philo)
 	{
-		if (current->meals_eaten >= data->must_eat_count)
-			fed_count++;
-		current = current->next;
-		i++;
-	}
-	if (fed_count == data->nb_philo)
-	{
-		end_simulation(data);
-		return (true);
-	}
-	return (false);
+		next = tmp->next;
+		free(tmp);
+		tmp = next;
+		}
+	if (philo)
+		free(philo);
 }
 
-void	*monitor_routine(void *arg)
+void	free_mutexes(t_mutexes *m)
 {
-	t_data	*data;
-	t_philo	*current;
-	int		i;
-
-	data = (t_data *)arg;
-	while (1)
+	if (!m)
+		return;
+	if (m->print_lock_initialized)
 	{
-		pthread_mutex_lock(&data->mutex->death_mutex);
-		if (data->simulation_end)
-		{
-			pthread_mutex_unlock(&data->mutex->death_mutex);
-			break ;
-		}
-		pthread_mutex_unlock(&data->mutex->death_mutex);
-		current = data->philos;
-		i = 0;
-		while (i < data->nb_philo)
-		{
-			if (check_death(current) || all_philosophers_fed(data))
-				return (NULL);
-			current = current->next;
-			i++;
-		}
-# ifdef ANIMATION
-		if (data->flags->animate)
-			update_animation(data);
-# endif
-		usleep(1000);
+		m->print_lock_initialized = false;
+		pthread_mutex_destroy(&m->print_lock);
 	}
-	return (NULL);
+	if (m->death_mutex_initialized)
+	{
+		m->death_mutex_initialized = false;
+		pthread_mutex_destroy(&m->death_mutex);
+	}
+	if (m->fed_mutex_initialized)
+	{
+		m->fed_mutex_initialized = false;
+		pthread_mutex_destroy(&m->fed_mutex);
+	}
+	if (m)
+		free(m);
 }

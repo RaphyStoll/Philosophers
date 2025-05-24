@@ -5,31 +5,31 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: raphaelferreira <raphaelferreira@studen    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/24 15:28:00 by raphaelferr       #+#    #+#             */
-/*   Updated: 2025/05/24 15:40:45 by raphaelferr      ###   ########.fr       */
+/*   Created: 2025/05/24 16:52:30 by raphaelferr       #+#    #+#             */
+/*   Updated: 2025/05/24 16:52:31 by raphaelferr      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-static void	philo_sleep(t_philo *philo)
+void	philo_sleep(t_philo *philo)
 {
 	print_status(philo, "is sleeping");
 	ft_usleep(philo->data->time_to_sleep);
 }
 
-static void	philo_think(t_philo *philo)
+void	philo_think(t_philo *philo)
 {
 	print_status(philo, "is thinking");
 }
 
-static void	drop_forks(t_philo *philo)
+void	drop_forks(t_philo *philo)
 {
 	pthread_mutex_unlock(philo->left_fork);
 	pthread_mutex_unlock(philo->right_fork);
 }
 
-static void	philo_eat(t_philo *philo)
+void	philo_eat(t_philo *philo)
 {
 	take_forks(philo);
 	if (!is_simulation_running(philo->data))
@@ -44,7 +44,7 @@ static void	philo_eat(t_philo *philo)
 	drop_forks(philo);
 }
 
-static void	take_forks(t_philo *philo)
+void	take_forks(t_philo *philo)
 {
 	if (philo->id % 2 == 0)
 	{

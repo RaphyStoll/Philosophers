@@ -6,7 +6,7 @@
 /*   By: raphaelferreira <raphaelferreira@studen    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 01:24:57 by raphaelferr       #+#    #+#             */
-/*   Updated: 2025/05/24 15:39:43 by raphaelferr      ###   ########.fr       */
+/*   Updated: 2025/05/24 16:35:17 by raphaelferr      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,9 +54,18 @@ void		ft_usleep(long long time);
 
 //! print
 void		print_status(t_philo *philo, char *status);
+bool		is_simulation_running(t_data *data);
 
 //! philosopher
 void		*philosopher_routine(void *arg);
+bool		is_simulation_running(t_data *data);
+
+//!action
+void		take_forks(t_philo *philo);
+void		philo_eat(t_philo *philo);
+void		drop_forks(t_philo *philo);
+void		philo_think(t_philo *philo);
+void		philo_sleep(t_philo *philo);
 
 //! monitor
 void		*monitor_routine(void *arg);

@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: raphaelferreira <raphaelferreira@studen    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/24 00:00:00 by raphaelferr       #+#    #+#             */
-/*   Updated: 2025/05/24 15:10:37 by raphaelferr      ###   ########.fr       */
+/*   Created: 2025/05/24 16:52:18 by raphaelferr       #+#    #+#             */
+/*   Updated: 2025/05/24 16:52:20 by raphaelferr      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,8 @@ static bool	check_death(t_philo *philo)
 	if (time_since_meal >= philo->data->time_to_die)
 	{
 		pthread_mutex_lock(&philo->data->mutex->print_lock);
-		printf("%lld %d died\n", current_time - philo->data->start_time, philo->id);
+		printf("%lld %d died\n", current_time - philo->data->start_time,
+			philo->id);
 		pthread_mutex_unlock(&philo->data->mutex->print_lock);
 		end_simulation(philo->data);
 		return (true);

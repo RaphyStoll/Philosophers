@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: raphaelferreira <raphaelferreira@studen    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/24 00:00:00 by raphaelferr       #+#    #+#             */
-/*   Updated: 2025/05/24 15:20:33 by raphaelferr      ###   ########.fr       */
+/*   Created: 2025/05/24 16:52:24 by raphaelferr       #+#    #+#             */
+/*   Updated: 2025/05/24 16:52:26 by raphaelferr      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,8 @@ bool	arg_verif(t_data *data, const int argc, const char **argv)
 	int	i;
 
 	if (argc < 5 || argc > 6)
-		return (error_msg("Usage: ./philo nb_philo time_to_die time_to_eat time_to_sleep [must_eat_count]"));
+		return (error_msg("Usage: ./philo nb_philo time_to_die time_to_eat"
+			"time_to_sleep [must_eat_count]"));
 	i = 1;
 	while (i < argc)
 	{
@@ -84,6 +85,7 @@ bool	parsing(t_data *data, const int argc, const char **argv)
 		return (false);
 	data->philos = create_philos(data);
 	if (!data->philos)
-		return (free_data(data), error_msg("Error: creating philosophers failed"));
+		return (free_data(data), error_msg("Error: creating philosophers "
+			"failed"));
 	return (true);
 }

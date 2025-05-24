@@ -5,22 +5,12 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: raphaelferreira <raphaelferreira@studen    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/24 00:00:00 by raphaelferr       #+#    #+#             */
-/*   Updated: 2025/05/24 15:28:04 by raphaelferr      ###   ########.fr       */
+/*   Created: 2025/05/24 16:52:36 by raphaelferr       #+#    #+#             */
+/*   Updated: 2025/05/24 16:52:38 by raphaelferr      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-static bool	is_simulation_running(t_data *data)
-{
-	bool	result;
-
-	pthread_mutex_lock(&data->mutex->death_mutex);
-	result = !data->simulation_end;
-	pthread_mutex_unlock(&data->mutex->death_mutex);
-	return (result);
-}
 
 void	*philosopher_routine(void *arg)
 {
