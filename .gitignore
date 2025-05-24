@@ -6,3 +6,8 @@ stdout
 tests.txt
 *.txt
 tmp_err.log
+settings.json
+.DS_Store
+info.plist
+test_runner.yml
+.vscode

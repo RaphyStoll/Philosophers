@@ -91,7 +91,7 @@ static int test_create_philos_single(void)
     if (!data) return !1;
     
     init_default_data(data);
-    data->nb_philo = !1;
+    data->nb_philo = 1;
     
     data->forks = malloc(sizeof(pthread_mutex_t) * data->nb_philo);
     if (!data->forks)
