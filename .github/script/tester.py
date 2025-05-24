@@ -439,27 +439,23 @@ def main():
             result = run_cmd(
                 valgrind_cmd, log_path=LOG_DIR / "valgrind.txt", timeout=30
             )
-
-            # Vérifier s'il y a de vraies fuites mémoire
-            has_real_leaks = False
-            if (
-                "leaked in loss record" in result.stderr
-                or "definitely lost" in result.stderr
-            ):
-                has_real_leaks = True
-            elif "All heap blocks were freed -- no leaks are possible" in result.stderr:
-                has_real_leaks = False
-            elif result.returncode != 0:
-                # Autres erreurs Valgrind (pas forcément des fuites)
-                has_real_leaks = True
-
-            if not has_real_leaks:
-                report.write("[OK]\\n")
+        if result.returncode == 0:
+            report.write("[OK]\n")
+        else:
+            report.write("[KO]\n")
+            write_header(report, "REMARQUES")
+            report.write("Fuites mémoire détectées :\n")
+            # CORRECTION: Définir valgrind_log_path AVANT de l'utiliser
+            valgrind_log_path = LOG_DIR / "valgrind.txt"
+            if valgrind_log_path.exists():
+                with open(valgrind_log_path, "r") as val_log:
+                    report.writelines(val_log.readlines())
             else:
-                report.write("[KO]\\n")
-                write_header(report, "REMARQUES")
-                report.write("Fuites mémoire détectées :\n")
-                valgrind_log_path = LOG_DIR / "valgrind.txt"
+                report.write("Fichier valgrind.txt non généré.\n")
+                report.write("stderr valgrind:\n")
+                report.write(result.stderr)
+                report.write("\nstdout valgrind:\n")
+                report.write(result.stdout)
             if valgrind_log_path.exists():
                 with open(valgrind_log_path, "r") as val_log:
                     report.writelines(val_log.readlines())
