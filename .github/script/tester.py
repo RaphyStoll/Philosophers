@@ -419,8 +419,13 @@ def main():
                 report.write("[KO]\n")
                 write_header(report, "REMARQUES")
                 report.write("Fuites mémoire détectées :\n")
-                with open(LOG_DIR / "valgrind.txt", "r") as val_log:
+                valgrind_log_path = LOG_DIR / "valgrind.txt"
+            if valgrind_log_path.exists():
+                with open(valgrind_log_path, "r") as val_log:
                     report.writelines(val_log.readlines())
+            else:
+                report.write("Fichier valgrind.txt non généré.\n")
+                report.write(f"stderr: {result.stderr}\n")
 
         # Résumé
         print(f"\n{CYAN}📋 Étape 5 : Génération du rapport...{RESET}")
