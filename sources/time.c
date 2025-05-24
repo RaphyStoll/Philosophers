@@ -1,30 +1,36 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   time.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: raphaelferreira <raphaelferreira@studen    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 00:00:00 by raphaelferr       #+#    #+#             */
-/*   Updated: 2025/05/24 15:26:07 by raphaelferr      ###   ########.fr       */
+/*   Updated: 2025/05/24 15:26:01 by raphaelferr      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+#include <sys/time.h>
 
-int	main(int argc, char **argv)
+long long	get_time(void)
 {
-	t_data	*data;
+	struct timeval	tv;
 
-	data = malloc(sizeof(t_data));
-	if (!data)
-		return (error_msg("Error: malloc data failed"), 1);
-	if (!init_default_data(data))
-		return (1);
-	if (!parsing(data, argc, (const char **)argv))
-		return (free_data(data), 1);
-	if (!start_simulation(data))
-		return (free_data(data), 1);
-	free_data(data);
-	return (0);
+	gettimeofday(&tv, NULL);
+	return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
+}
+
+long long	time_diff(long long start, long long end)
+{
+	return (end - start);
+}
+
+void	ft_usleep(long long time)
+{
+	long long	start;
+
+	start = get_time();
+	while (time_diff(start, get_time()) < time)
+		usleep(100);
 }

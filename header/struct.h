@@ -6,7 +6,7 @@
 /*   By: raphaelferreira <raphaelferreira@studen    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 01:25:00 by raphaelferr       #+#    #+#             */
-/*   Updated: 2025/05/08 01:25:03 by raphaelferr      ###   ########.fr       */
+/*   Updated: 2025/05/24 15:25:48 by raphaelferr      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 # include <pthread.h>
 # include "stdbool.h"
+
 typedef struct s_philo
 {
 	int				id;
@@ -24,16 +25,16 @@ typedef struct s_philo
 	pthread_mutex_t	*right_fork;
 	struct s_data	*data;
 	struct s_philo	*next;
-}   t_philo;
+}	t_philo;
 
 typedef struct s_flags
 {
-	bool help;
-	bool debug;
-	bool verbose;
-	bool animate;
-	bool stats;
-	bool log;
+	bool	help;
+	bool	debug;
+	bool	verbose;
+	bool	animate;
+	bool	stats;
+	bool	log;
 }	t_flags;
 
 typedef struct s_mutexes
@@ -61,6 +62,6 @@ typedef struct s_data
 	bool			is_dead;
 	int				fed_count;
 	bool			simulation_end;
-}   t_data;
+}	t_data;
 
 #endif

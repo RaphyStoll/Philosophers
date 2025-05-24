@@ -1,30 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   print_anim.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: raphaelferreira <raphaelferreira@studen    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 00:00:00 by raphaelferr       #+#    #+#             */
-/*   Updated: 2025/05/24 15:26:07 by raphaelferr      ###   ########.fr       */
+/*   Updated: 2025/05/24 15:38:56 by raphaelferr      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
+#include "philo_anim.h"
 
-int	main(int argc, char **argv)
+static bool	is_simulation_running(t_data *data)
 {
-	t_data	*data;
+	bool	result;
 
-	data = malloc(sizeof(t_data));
-	if (!data)
-		return (error_msg("Error: malloc data failed"), 1);
-	if (!init_default_data(data))
-		return (1);
-	if (!parsing(data, argc, (const char **)argv))
-		return (free_data(data), 1);
-	if (!start_simulation(data))
-		return (free_data(data), 1);
-	free_data(data);
-	return (0);
+	pthread_mutex_lock(&data->mutex->death_mutex);
+	result = !data->simulation_end;
+	pthread_mutex_unlock(&data->mutex->death_mutex);
+	return (result);
+}
+
+void	print_status(t_philo *philo, char *status)
+{
+	if (!is_simulation_running(philo->data))
+		return ;
+	print_status_animated(philo, status);
 }

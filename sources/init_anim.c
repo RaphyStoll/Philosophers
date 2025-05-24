@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   init.c                                             :+:      :+:    :+:   */
+/*   init_anim.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: raphaelferreira <raphaelferreira@studen    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/07 15:02:52 by raphaelferr       #+#    #+#             */
-/*   Updated: 2025/05/24 15:39:27 by raphaelferr      ###   ########.fr       */
+/*   Created: 2025/05/24 00:00:00 by raphaelferr       #+#    #+#             */
+/*   Updated: 2025/05/24 15:38:22 by raphaelferr      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
+#include "philo_anim.h"
 
 static bool	init_mutexes(t_data *data)
 {
@@ -37,7 +37,7 @@ static bool	init_flags(t_data *data)
 	data->flags = malloc(sizeof(t_flags));
 	if (!data->flags)
 		return (free_data(data), error_msg("Error: malloc flags failed"));
-	*data->flags = (t_flags){false, false, false, false, false, false};
+	*data->flags = (t_flags){false, false, false, true, false, false};
 	return (true);
 }
 

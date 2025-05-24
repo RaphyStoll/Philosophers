@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   memory.c                                           :+:      :+:    :+:   */
+/*   monitor_anim.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: raphaelferreira <raphaelferreira@studen    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 00:00:00 by raphaelferr       #+#    #+#             */
-/*   Updated: 2025/05/24 15:20:20 by raphaelferr      ###   ########.fr       */
+/*   Updated: 2025/05/24 15:38:45 by raphaelferr      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
+#include "philo_anim.h"
 
 static void	end_simulation(t_data *data)
 {
@@ -28,20 +28,7 @@ static bool	check_death(t_philo *philo)
 	time_since_meal = current_time - philo->last_meal;
 	if (time_since_meal >= philo->data->time_to_die)
 	{
-# ifdef ANIMATION
-		if (philo->data->flags->animate)
-		{
-			print_status_animated(philo, "died");
-		}
-		else
-		{
-# endif
-			pthread_mutex_lock(&philo->data->mutex->print_lock);
-			printf("%lld %d died\n", current_time - philo->data->start_time, philo->id);
-			pthread_mutex_unlock(&philo->data->mutex->print_lock);
-# ifdef ANIMATION
-		}
-# endif
+		print_status_animated(philo, "died");
 		end_simulation(philo->data);
 		return (true);
 	}
@@ -99,10 +86,7 @@ void	*monitor_routine(void *arg)
 			current = current->next;
 			i++;
 		}
-# ifdef ANIMATION
-		if (data->flags->animate)
-			update_animation(data);
-# endif
+		update_animation(data);
 		usleep(1000);
 	}
 	return (NULL);

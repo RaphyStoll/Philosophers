@@ -1,17 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philo.h                                            :+:      :+:    :+:   */
+/*   pjilo_anim.h                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: raphaelferreira <raphaelferreira@studen    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/08 01:24:57 by raphaelferr       #+#    #+#             */
-/*   Updated: 2025/05/24 15:39:43 by raphaelferr      ###   ########.fr       */
+/*   Created: 2025/05/24 15:37:57 by raphaelferr       #+#    #+#             */
+/*   Updated: 2025/05/24 15:37:58 by raphaelferr      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PHILO_H
-# define PHILO_H
+#ifndef PHILO_ANIM_H
+# define PHILO_ANIM_H
 
 # include <stdlib.h>
 # include <stdbool.h>
@@ -21,6 +21,7 @@
 # include <pthread.h>
 # include <sys/time.h>
 # include "struct.h"
+# include "animation.h"
 
 //! main
 int			main(int argc, char **argv);
