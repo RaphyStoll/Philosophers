@@ -6,26 +6,11 @@
 /*   By: raphaelferreira <raphaelferreira@studen    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 16:52:24 by raphaelferr       #+#    #+#             */
-/*   Updated: 2025/05/24 16:52:26 by raphaelferr      ###   ########.fr       */
+/*   Updated: 2025/05/24 17:08:08 by raphaelferr      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-static long long	ft_atoll(const char *str)
-{
-	long long	result;
-	int			i;
-
-	result = 0;
-	i = 0;
-	while (str[i])
-	{
-		result = result * 10 + (str[i] - '0');
-		i++;
-	}
-	return (result);
-}
 
 static bool	init_forks(t_data *data)
 {

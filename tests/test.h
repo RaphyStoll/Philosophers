@@ -1,10 +1,7 @@
-
-
 #ifndef TEST_H
 # define TEST_H
 
 # include <stdio.h>
-
 
 # define RED = "\033[0;31m"
 # define GREEN = "\033[0;32m"
@@ -19,10 +16,11 @@
 # define BOLD = "\033[1m"
 # define WHITE = "\033[0;37m"
 
+// CORRECTION ICI: inversion de la logique d'affichage
 # define RUN_SUBTEST(name, func) do { \
 		printf("----- %s -----\n", name); \
 		int result = func(); \
-		printf("result: %s\n\n", result ? "KO 🔴" : "OK 🟢"); \
+		printf("result: %s\n\n", result ? "OK 🟢" : "KO 🔴"); \
 		failures += !result; \
 	} while (0)
 

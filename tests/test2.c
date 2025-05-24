@@ -21,9 +21,9 @@ static int test_strlen_case(const char *input, const char *label)
 	{
 		printf(" > FAIL: [%s]: ft_strlen(\"%s\") = %zu (expected %zu)\n",
 			label, input, actual, expected);
-		return 1;
+		return !1;
 	}
-	return 0;
+	return !0;
 }
 
 static int test_empty_string(void)

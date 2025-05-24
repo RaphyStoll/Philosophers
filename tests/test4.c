@@ -20,9 +20,9 @@ static int test_strcmp_case(const char *s1, const char *s2, const char *label)
 	{
 		fprintf(stderr, " > FAIL: [%s] ft_strcmp(\"%s\", \"%s\") = %d (expected sign %d)\n",
 			label, s1, s2, result, expected);
-		return (1);
+		return (!1);
 	}
-	return (0);
+	return (!0);
 }
 
 static int test_strcmp_equal_strings(void)

@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   init.c                                             :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: raphaelferreira <raphaelferreira@studen    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/24 16:51:59 by raphaelferr       #+#    #+#             */
-/*   Updated: 2025/05/24 16:52:03 by raphaelferr      ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "philo.h"
 
 static bool	init_mutexes(t_data *data)
@@ -20,6 +8,7 @@ static bool	init_mutexes(t_data *data)
 	data->mutex->print_lock_initialized = false;
 	data->mutex->death_mutex_initialized = false;
 	data->mutex->fed_mutex_initialized = false;
+	data->mutex->data_mutex_initialized = false;
 	if (pthread_mutex_init(&data->mutex->print_lock, NULL) != 0)
 		return (free_data(data), error_msg("Error: print_lock init failed"));
 	data->mutex->print_lock_initialized = true;
@@ -29,6 +18,9 @@ static bool	init_mutexes(t_data *data)
 	if (pthread_mutex_init(&data->mutex->fed_mutex, NULL) != 0)
 		return (free_data(data), error_msg("Error: fed_mutex init failed"));
 	data->mutex->fed_mutex_initialized = true;
+	if (pthread_mutex_init(&data->mutex->data_mutex, NULL) != 0)
+		return (free_data(data), error_msg("Error: data_mutex init failed"));
+	data->mutex->data_mutex_initialized = true;
 	return (true);
 }
 

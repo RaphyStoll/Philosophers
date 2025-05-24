@@ -6,7 +6,7 @@
 /*   By: raphaelferreira <raphaelferreira@studen    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 16:52:30 by raphaelferr       #+#    #+#             */
-/*   Updated: 2025/05/24 16:52:31 by raphaelferr      ###   ########.fr       */
+/*   Updated: 2025/05/24 22:58:27 by raphaelferr      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,9 +37,9 @@ void	philo_eat(t_philo *philo)
 		drop_forks(philo);
 		return ;
 	}
-	philo->last_meal = get_time();
+	safe_set_last_meal(philo, get_time());
 	print_status(philo, "is eating");
-	philo->meals_eaten++;
+	safe_increment_meals(philo);
 	ft_usleep(philo->data->time_to_eat);
 	drop_forks(philo);
 }

@@ -6,7 +6,7 @@
 /*   By: raphaelferreira <raphaelferreira@studen    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 01:24:57 by raphaelferr       #+#    #+#             */
-/*   Updated: 2025/05/24 16:35:17 by raphaelferr      ###   ########.fr       */
+/*   Updated: 2025/05/24 23:12:38 by raphaelferr      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ int			main(int argc, char **argv);
 
 //! init
 t_philo		*create_philos(t_data *data);
-t_data		*init_default_data(t_data* data);
+t_data		*init_default_data(t_data *data);
 
 //! parsing
 bool		parsing(t_data *data, const int argc, const char **argv);
@@ -46,6 +46,7 @@ bool		error_msg(const char *msg);
 size_t		ft_strlen(const char *str);
 bool		is_digit(char *str);
 int			ft_strcmp(char *s1, char *s2);
+long long	ft_atoll(const char *str);
 
 //! time
 long long	get_time(void);
@@ -58,9 +59,8 @@ bool		is_simulation_running(t_data *data);
 
 //! philosopher
 void		*philosopher_routine(void *arg);
-bool		is_simulation_running(t_data *data);
 
-//!action
+//! action
 void		take_forks(t_philo *philo);
 void		philo_eat(t_philo *philo);
 void		drop_forks(t_philo *philo);
@@ -72,5 +72,11 @@ void		*monitor_routine(void *arg);
 
 //! simulation
 bool		start_simulation(t_data *data);
+
+//! safe_sync - nouvelles fonctions de synchronisation
+void		safe_set_last_meal(t_philo *philo, long long time);
+long long	safe_get_last_meal(t_philo *philo);
+void		safe_increment_meals(t_philo *philo);
+int			safe_get_meals_eaten(t_philo *philo);
 
 #endif

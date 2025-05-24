@@ -6,7 +6,7 @@
 /*   By: raphaelferreira <raphaelferreira@studen    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 16:52:54 by raphaelferr       #+#    #+#             */
-/*   Updated: 2025/05/24 16:52:56 by raphaelferr      ###   ########.fr       */
+/*   Updated: 2025/05/24 17:08:40 by raphaelferr      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,5 +32,5 @@ void	ft_usleep(long long time)
 
 	start = get_time();
 	while (time_diff(start, get_time()) < time)
-		usleep(100);
+		usleep(10);
 }

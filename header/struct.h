@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   struct.h                                           :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: raphaelferreira <raphaelferreira@studen    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/08 01:25:00 by raphaelferr       #+#    #+#             */
-/*   Updated: 2025/05/24 15:25:48 by raphaelferr      ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #ifndef STRUCT_H
 # define STRUCT_H
 
@@ -45,6 +33,8 @@ typedef struct s_mutexes
 	pthread_mutex_t		death_mutex;
 	bool				fed_mutex_initialized;
 	pthread_mutex_t		fed_mutex;
+	bool				data_mutex_initialized;
+	pthread_mutex_t		data_mutex;
 }	t_mutexes;
 
 typedef struct s_data

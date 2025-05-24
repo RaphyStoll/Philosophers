@@ -6,7 +6,7 @@
 /*   By: raphaelferreira <raphaelferreira@studen    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 16:52:18 by raphaelferr       #+#    #+#             */
-/*   Updated: 2025/05/24 16:52:20 by raphaelferr      ###   ########.fr       */
+/*   Updated: 2025/05/24 22:58:14 by raphaelferr      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,14 +23,19 @@ static bool	check_death(t_philo *philo)
 {
 	long long	time_since_meal;
 	long long	current_time;
+	long long	last_meal;
 
 	current_time = get_time();
-	time_since_meal = current_time - philo->last_meal;
+	last_meal = safe_get_last_meal(philo);
+	time_since_meal = current_time - last_meal;
 	if (time_since_meal >= philo->data->time_to_die)
 	{
 		pthread_mutex_lock(&philo->data->mutex->print_lock);
-		printf("%lld %d died\n", current_time - philo->data->start_time,
-			philo->id);
+		if (is_simulation_running(philo->data))
+		{
+			printf("%lld %d died\n", current_time - philo->data->start_time,
+				philo->id);
+		}
 		pthread_mutex_unlock(&philo->data->mutex->print_lock);
 		end_simulation(philo->data);
 		return (true);
@@ -43,6 +48,7 @@ static bool	all_philosophers_fed(t_data *data)
 	t_philo	*current;
 	int		fed_count;
 	int		i;
+	int		meals;
 
 	if (data->must_eat_count == -1)
 		return (false);
@@ -51,7 +57,8 @@ static bool	all_philosophers_fed(t_data *data)
 	i = 0;
 	while (i < data->nb_philo)
 	{
-		if (current->meals_eaten >= data->must_eat_count)
+		meals = safe_get_meals_eaten(current);
+		if (meals >= data->must_eat_count)
 			fed_count++;
 		current = current->next;
 		i++;
@@ -89,7 +96,7 @@ void	*monitor_routine(void *arg)
 			current = current->next;
 			i++;
 		}
-		usleep(1000);
+		usleep(500);
 	}
 	return (NULL);
 }

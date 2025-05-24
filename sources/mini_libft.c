@@ -6,7 +6,7 @@
 /*   By: raphaelferreira <raphaelferreira@studen    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 16:52:14 by raphaelferr       #+#    #+#             */
-/*   Updated: 2025/05/24 16:52:15 by raphaelferr      ###   ########.fr       */
+/*   Updated: 2025/05/24 16:56:19 by raphaelferr      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,4 +50,19 @@ bool	is_digit(char *str)
 		i++;
 	}
 	return (true);
+}
+
+long long	ft_atoll(const char *str)
+{
+	long long	result;
+	int			i;
+
+	result = 0;
+	i = 0;
+	while (str[i])
+	{
+		result = result * 10 + (str[i] - '0');
+		i++;
+	}
+	return (result);
 }

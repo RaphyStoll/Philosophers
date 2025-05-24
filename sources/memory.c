@@ -1,21 +1,9 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   memory.c                                           :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: raphaelferreira <raphaelferreira@studen    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/24 16:52:09 by raphaelferr       #+#    #+#             */
-/*   Updated: 2025/05/24 16:52:11 by raphaelferr      ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "philo.h"
 
 void	free_data(t_data *data)
 {
 	if (!data)
-		return;
+		return ;
 	if (data->flags)
 		free_flags(data->flags);
 	if (data->philos)
@@ -30,23 +18,24 @@ void	free_data(t_data *data)
 
 void	free_flags(t_flags *flags)
 {
-		if (flags)
+	if (flags)
 		free(flags);
 }
 
 void	free_philo(t_philo *philo)
 {
-	t_philo *tmp;
-	t_philo *next;
+	t_philo	*tmp;
+	t_philo	*next;
+
 	if (!philo)
-		return;
+		return ;
 	tmp = philo->next;
 	while (tmp && tmp != philo)
 	{
 		next = tmp->next;
 		free(tmp);
 		tmp = next;
-		}
+	}
 	if (philo)
 		free(philo);
 }
@@ -54,7 +43,7 @@ void	free_philo(t_philo *philo)
 void	free_mutexes(t_mutexes *m)
 {
 	if (!m)
-		return;
+		return ;
 	if (m->print_lock_initialized)
 	{
 		m->print_lock_initialized = false;
@@ -69,6 +58,11 @@ void	free_mutexes(t_mutexes *m)
 	{
 		m->fed_mutex_initialized = false;
 		pthread_mutex_destroy(&m->fed_mutex);
+	}
+	if (m->data_mutex_initialized)
+	{
+		m->data_mutex_initialized = false;
+		pthread_mutex_destroy(&m->data_mutex);
 	}
 	if (m)
 		free(m);

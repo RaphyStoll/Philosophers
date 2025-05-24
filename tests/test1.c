@@ -74,7 +74,7 @@ static bool compare_two_data_init(void)
 
 	free_data(d1);
 	free_data(d2);
-	return !has_error;
+	return has_error;
 }
 
 static bool	base_test(void)
@@ -204,7 +204,7 @@ static bool	base_test(void)
 	}
 
 	free_data(data);
-	return (!has_error);
+	return (has_error);
 }
 
 int test1(void)

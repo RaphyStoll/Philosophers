@@ -74,7 +74,229 @@ def run_cmd(cmd, log_path=None, timeout=30):
     return result
 
 
+def parse_test_results(test_log_path):
+    """Parse les résultats des tests et retourne (ok_count, ko_count, failed_tests)"""
+    ok_count = 0
+    ko_count = 0
+    failed_tests = []
+
+    if not test_log_path.exists():
+        return 0, 0, ["Test log file not found"]
+
+    with open(test_log_path, "r") as f:
+        content = f.read()
+        lines = content.split("\n")
+
+        current_test = None
+        for line in lines:
+            if "[test" in line and "] " in line:
+                # Extrait le nom du test: "[test utils] ft_strlen"
+                current_test = line.strip()
+            elif "[OK] → 🟢" in line:
+                ok_count += 1
+            elif "[KO] → 🔴" in line:
+                ko_count += 1
+                if current_test:
+                    # Cherche les détails d'erreur pour ce test
+                    failed_tests.append(current_test)
+
+    return ok_count, ko_count, failed_tests
+
+
+def parse_report_status(report_path):
+    """Parse le rapport et retourne le statut de chaque section"""
+    status = {
+        "compilation": "unknown",
+        "norminette": "unknown",
+        "tests": "unknown",
+        "valgrind": "unknown",
+        "compilation_errors": "",
+        "norminette_errors": "",
+        "test_details": "",
+        "failed_tests": [],
+    }
+
+    if not report_path.exists():
+        return status
+
+    with open(report_path, "r") as f:
+        content = f.read()
+        sections = content.split("====")
+
+        for section in sections:
+            if "COMPILATION" in section:
+                if "[OK]" in section:
+                    status["compilation"] = "ok"
+                elif "[KO]" in section:
+                    status["compilation"] = "ko"
+                    # Extraction des erreurs de compilation
+                    lines = section.split("\n")
+                    error_lines = [
+                        line.strip()
+                        for line in lines
+                        if "error:" in line or "Error" in line
+                    ]
+                    status["compilation_errors"] = "\n".join(
+                        error_lines[:5]
+                    )  # Max 5 lignes
+
+            elif "NORMINETTE" in section:
+                if "[OK]" in section:
+                    status["norminette"] = "ok"
+                elif "[KO]" in section:
+                    status["norminette"] = "ko"
+                    # Extraction des erreurs norminette
+                    lines = section.split("\n")
+                    error_lines = [line.strip() for line in lines if "Error" in line]
+                    status["norminette_errors"] = "\n".join(
+                        error_lines[:5]
+                    )  # Max 5 lignes
+
+            elif "VALGRIND" in section:
+                if "[OK]" in section:
+                    status["valgrind"] = "ok"
+                elif "[KO]" in section:
+                    status["valgrind"] = "ko"
+
+    # Parse des résultats de tests
+    test_log_path = LOG_DIR / "tests.txt"
+    ok_count, ko_count, failed_tests = parse_test_results(test_log_path)
+
+    if ko_count == 0 and ok_count > 0:
+        status["tests"] = "ok"
+    elif ko_count > 0:
+        status["tests"] = "ko"
+        status["failed_tests"] = failed_tests
+        status["test_details"] = f"{ok_count} OK, {ko_count} KO"
+
+    return status
+
+
+def create_discord_embed(report_path, commit_hash, commit_msg):
+    """Crée l'embed Discord au format JSON"""
+
+    status = parse_report_status(report_path)
+
+    # Détermine la couleur globale (vert si tout OK, rouge sinon)
+    all_ok = all(
+        s == "ok"
+        for s in [
+            status["compilation"],
+            status["norminette"],
+            status["tests"],
+            status["valgrind"],
+        ]
+    )
+    color = 0x00FF00 if all_ok else 0xFF0000  # Vert ou Rouge
+
+    # Création des fields
+    fields = [
+        {
+            "name": "📦 Compilation",
+            "value": "🟢 OK" if status["compilation"] == "ok" else "🔴 FAILED",
+            "inline": True,
+        },
+        {
+            "name": "🔎 Norminette",
+            "value": "🟢 OK" if status["norminette"] == "ok" else "🔴 ERRORS",
+            "inline": True,
+        },
+        {
+            "name": "🧪 Tests",
+            "value": (
+                f"🟢 {status['test_details']}"
+                if status["tests"] == "ok"
+                else f"🔴 {status['test_details']}"
+            ),
+            "inline": True,
+        },
+        {
+            "name": "🧼 Valgrind",
+            "value": "🟢 CLEAN" if status["valgrind"] == "ok" else "🔴 LEAKS DETECTED",
+            "inline": True,
+        },
+    ]
+
+    # Ajout du résumé et des détails d'erreur si nécessaire
+    if not all_ok:
+        failed_sections = []
+        if status["compilation"] == "ko":
+            failed_sections.append("Compilation")
+        if status["norminette"] == "ko":
+            failed_sections.append("Norminette")
+        if status["tests"] == "ko":
+            failed_sections.append("Tests")
+        if status["valgrind"] == "ko":
+            failed_sections.append("Valgrind")
+
+        # Résumé des échecs
+        fields.append(
+            {
+                "name": "❌ Failed sections",
+                "value": ", ".join(failed_sections),
+                "inline": False,
+            }
+        )
+
+        # Détails des erreurs (sauf Valgrind)
+        if status["compilation"] == "ko" and status["compilation_errors"]:
+            fields.append(
+                {
+                    "name": "🔧 Compilation Errors",
+                    "value": f"```\n{status['compilation_errors']}\n```",
+                    "inline": False,
+                }
+            )
+
+        if status["norminette"] == "ko" and status["norminette_errors"]:
+            fields.append(
+                {
+                    "name": "🔍 Norminette Errors",
+                    "value": f"```\n{status['norminette_errors']}\n```",
+                    "inline": False,
+                }
+            )
+
+        if status["tests"] == "ko" and status["failed_tests"]:
+            test_failures = "\n".join(status["failed_tests"][:3])  # Max 3 tests
+            fields.append(
+                {
+                    "name": "🧪 Test Failures",
+                    "value": f"```\n{test_failures}\n```",
+                    "inline": False,
+                }
+            )
+
+        if status["valgrind"] == "ko":
+            fields.append(
+                {
+                    "name": "🧼 Memory Analysis",
+                    "value": "Check CI logs for detailed memory analysis",
+                    "inline": False,
+                }
+            )
+    else:
+        fields.append(
+            {"name": "✅ Status", "value": "All checks passed", "inline": False}
+        )
+
+    # Construction de l'embed
+    embed = {
+        "title": "🌿 Philosophers CI Report",
+        "description": f"**Commit:** `{commit_hash}`\n{commit_msg}",
+        "color": color,
+        "fields": fields,
+        "footer": {"text": "Philosophers CI Pipeline"},
+        "timestamp": subprocess.run(
+            ["date", "-Iseconds"], capture_output=True, text=True
+        ).stdout.strip(),
+    }
+
+    return {"embeds": [embed]}
+
+
 def build_discord_report(report_path):
+    """Version legacy pour compatibilité (garde l'ancien format texte)"""
     lines = []
     section = None
     with open(report_path) as f:
@@ -276,15 +498,28 @@ def main():
 
     if webhook:
         print(f"\n{CYAN}📡 Envoi du rapport vers Discord...{RESET}")
-        payload = {"content": build_discord_report(report_path)}
+
+        # Création de l'embed JSON
+        payload = create_discord_embed(report_path, commit_hash, commit_msg)
+
         try:
             response = requests.post(webhook, json=payload)
             if response.status_code == 204:
-                print(f"{GREEN}✅ Rapport envoyé avec succès !{RESET}")
+                print(f"{GREEN}✅ Rapport envoyé avec succès (embed format) !{RESET}")
             else:
                 print(
-                    f"{RED}❌ Échec de l'envoi Discord : {response.status_code}{RESET}"
+                    f"{RED}❌ Échec de l'envoi Discord (embed) : {response.status_code}{RESET}"
                 )
+                # Fallback vers l'ancien format
+                print(f"{YELLOW}⚠️ Tentative avec l'ancien format...{RESET}")
+                fallback_payload = {"content": build_discord_report(report_path)}
+                response = requests.post(webhook, json=fallback_payload)
+                if response.status_code == 204:
+                    print(f"{GREEN}✅ Rapport envoyé (format texte) !{RESET}")
+                else:
+                    print(
+                        f"{RED}❌ Échec total de l'envoi Discord : {response.status_code}{RESET}"
+                    )
         except Exception as e:
             print(f"{RED}❌ Exception Discord : {e}{RESET}")
 
