@@ -92,6 +92,11 @@ def parse_test_results(test_log_path):
             if "[test" in line and "] " in line:
                 # Extrait le nom du test: "[test utils] ft_strlen"
                 current_test = line.strip()
+            elif "result: OK 🟢" in line:
+                ok_count += 1
+            elif "result: KO 🔴" in line:
+                ko_count += 1
+            # Fallback pour ancien format
             elif "[OK] → 🟢" in line:
                 ok_count += 1
             elif "[KO] → 🔴" in line:
