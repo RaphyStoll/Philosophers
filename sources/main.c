@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raphaelferreira <raphaelferreira@studen    +#+  +:+       +#+        */
+/*   By: raphalme <raphalme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/24 16:51:54 by raphaelferr       #+#    #+#             */
-/*   Updated: 2025/05/24 22:57:39 by raphaelferr      ###   ########.fr       */
+/*   Created: 2025/05/25 14:04:11 by raphalme          #+#    #+#             */
+/*   Updated: 2025/05/25 14:04:14 by raphalme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

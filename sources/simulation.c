@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   simulation.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raphaelferreira <raphaelferreira@studen    +#+  +:+       +#+        */
+/*   By: raphalme <raphalme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/24 16:52:47 by raphaelferr       #+#    #+#             */
-/*   Updated: 2025/05/24 16:52:48 by raphaelferr      ###   ########.fr       */
+/*   Created: 2025/05/25 14:05:16 by raphalme          #+#    #+#             */
+/*   Updated: 2025/05/25 16:10:52 by raphalme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,15 +51,11 @@ bool	start_simulation(t_data *data)
 	if (!threads)
 		return (error_msg("Error: malloc threads failed"));
 	data->start_time = get_time();
-# ifdef ANIMATION
-	if (data->flags->animate)
-		init_animation(data);
-# endif
+	data->philos = create_philos(data);
 	if (!create_threads(data, threads))
-	{
-		free(threads);
-		return (false);
-	}
+		return (free(threads), false);
+	if(!data->philos)
+		return (free(threads), false);
 	if (pthread_create(&monitor_thread, NULL, monitor_routine, data) != 0)
 	{
 		join_threads(data, threads);
@@ -68,16 +64,11 @@ bool	start_simulation(t_data *data)
 	}
 	join_threads(data, threads);
 	pthread_join(monitor_thread, NULL);
-# ifdef ANIMATION
-	if (data->flags->animate)
-		cleanup_animation();
-# endif
 	i = 0;
 	while (i < data->nb_philo)
 	{
 		pthread_mutex_destroy(&data->forks[i]);
 		i++;
 	}
-	free(threads);
-	return (true);
+	return (free(threads), true);
 }

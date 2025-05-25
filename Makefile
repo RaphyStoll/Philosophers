@@ -4,12 +4,12 @@
 
 USE_BONUS   = no
 
-NAME        = philo
+NAME        = output/philo
 NAME_BONUS  = philo_bonus
 TEST_RUNNER = test_runner
 
 CC          = gcc
-CFLAGS      = -Wall -Wextra -Werror -g -Iheader
+CFLAGS      = -Wall -Wextra -Werror -g -Iheader -O3
 PTHREAD     = -lpthread
 
 INCLUDES        = -Iheader
@@ -71,6 +71,8 @@ $(NAME): $(OBJ_FILES)
 	@set -e; \
 	colors="30 31 32 33 34 35 36 37 90 91 92 93 94 95 96 97"; \
 	color=$$(echo $$colors | tr ' ' '\n' | shuf -n1); \
+	mkdir -p output; \
+	printf "\033[2K\r$(CYAN)→ creating output folder...$(RESET)"; \
 	printf "\033[2K\r$(CYAN)→ Linking objects...$(RESET)"; \
 	$(CC) $(CFLAGS) $(OBJ_FILES) -o $(NAME) $(PTHREAD); \
 	printf "\033[2K\r$(BOLD)$(GREEN)✔ Finished building $(NAME)$(RESET)\n"; \
@@ -172,6 +174,8 @@ fclean: clean
 	@printf "\033[2K\r$(RED)→ Removing executables...$(RESET)"
 	@$(RM) $(NAME) $(NAME_BONUS) $(TEST_RUNNER)
 	@printf "\033[2K\r$(GREEN)✔ Removed executables$(RESET)\n"
+	@$(RM) -r ./output
+	@printf "\033[2K\r$(GREEN)✔ Removed output dir$(RESET)\n"
 
 re: fclean all
 
@@ -180,7 +184,7 @@ re: fclean all
 # ------------------------------------------------------------------------------
 valgrind: $(NAME)
 	@printf "$(YELLOW)🧼 Running Valgrind memory check...$(RESET)\n"
-	valgrind --leak-check=full --show-leak-kinds=all --trace-children=yes --track-fds=yes --track-origins=yes --log-file="valgrind.log" ./$(NAME) 4 410 200 200
+	valgrind --leak-check=full --show-leak-kinds=all --trace-children=yes --track-fds=yes --track-origins=yes --log-file="valgrind.log" ./$(NAME) 5 800 200 200 12
 
 test: $(TEST_RUNNER)
 	@printf "$(CYAN)🧪 Running philosophers tests...$(RESET)\n"

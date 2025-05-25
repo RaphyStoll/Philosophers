@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raphaelferreira <raphaelferreira@studen    +#+  +:+       +#+        */
+/*   By: raphalme <raphalme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/24 16:52:59 by raphaelferr       #+#    #+#             */
-/*   Updated: 2025/05/24 16:53:23 by raphaelferr      ###   ########.fr       */
+/*   Created: 2025/05/25 14:05:25 by raphalme          #+#    #+#             */
+/*   Updated: 2025/05/25 15:20:15 by raphalme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,8 @@
 
 bool	error_msg(const char *msg)
 {
-	write(2, msg, ft_strlen(msg));
-	write(2, "\n", 1);
+	(void)msg;
+	//write(2, msg, ft_strlen(msg));
+	//write(2, "\n", 1);
 	return (false);
 }

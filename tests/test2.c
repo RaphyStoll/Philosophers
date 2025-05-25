@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
+#include <stdbool.h>
 #include "test.h"
 
 size_t	ft_strlen(const char *str);
@@ -21,9 +22,9 @@ static int test_strlen_case(const char *input, const char *label)
 	{
 		printf(" > FAIL: [%s]: ft_strlen(\"%s\") = %zu (expected %zu)\n",
 			label, input, actual, expected);
-		return !1;
+		return false;
 	}
-	return !0;
+	return true;
 }
 
 static int test_empty_string(void)

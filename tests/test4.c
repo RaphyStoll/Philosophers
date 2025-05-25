@@ -8,6 +8,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <stdbool.h>
 #include "test.h"
 
 int	ft_strcmp(char *s1, char *s2);
@@ -20,9 +21,9 @@ static int test_strcmp_case(const char *s1, const char *s2, const char *label)
 	{
 		fprintf(stderr, " > FAIL: [%s] ft_strcmp(\"%s\", \"%s\") = %d (expected sign %d)\n",
 			label, s1, s2, result, expected);
-		return (!1);
+		return (false);
 	}
-	return (!0);
+	return (true);
 }
 
 static int test_strcmp_equal_strings(void)

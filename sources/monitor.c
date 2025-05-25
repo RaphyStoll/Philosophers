@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   monitor.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raphaelferreira <raphaelferreira@studen    +#+  +:+       +#+        */
+/*   By: raphalme <raphalme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/24 16:52:18 by raphaelferr       #+#    #+#             */
-/*   Updated: 2025/05/24 22:58:14 by raphaelferr      ###   ########.fr       */
+/*   Created: 2025/05/25 14:04:42 by raphalme          #+#    #+#             */
+/*   Updated: 2025/05/25 16:33:48 by raphalme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,26 +43,26 @@ static bool	check_death(t_philo *philo)
 	return (false);
 }
 
-static bool	all_philosophers_fed(t_data *data)
+static bool all_philosophers_fed(t_data *data)
 {
-	t_philo	*current;
-	int		fed_count;
-	int		i;
-	int		meals;
+	t_philo *current;
+	int fed_count;
+	int i;
 
 	if (data->must_eat_count == -1)
 		return (false);
 	fed_count = 0;
 	current = data->philos;
 	i = 0;
+	pthread_mutex_lock(&data->mutex->data_mutex);
 	while (i < data->nb_philo)
 	{
-		meals = safe_get_meals_eaten(current);
-		if (meals >= data->must_eat_count)
+		if (current->meals_eaten >= data->must_eat_count)
 			fed_count++;
 		current = current->next;
 		i++;
 	}
+	pthread_mutex_unlock(&data->mutex->data_mutex);
 	if (fed_count == data->nb_philo)
 	{
 		end_simulation(data);
@@ -88,15 +88,14 @@ void	*monitor_routine(void *arg)
 		}
 		pthread_mutex_unlock(&data->mutex->death_mutex);
 		current = data->philos;
-		i = 0;
-		while (i < data->nb_philo)
+		i = -1;
+		while (i++, i < data->nb_philo)
 		{
 			if (check_death(current) || all_philosophers_fed(data))
 				return (NULL);
 			current = current->next;
-			i++;
 		}
-		usleep(500);
+		usleep(1000);
 	}
 	return (NULL);
 }

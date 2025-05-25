@@ -11,6 +11,7 @@
 #include <unistd.h>
 #include <sys/time.h>
 #include <sys/time.h>
+#include <stdbool.h>
 
 long long get_time(void);
 long long time_diff(long long start, long long end);
@@ -25,16 +26,16 @@ static int test_get_time_monotonic(void)
     if (time2 <= time1)
     {
         printf(" > FAIL: get_time() should be monotonic\n");
-        return !1;
+        return false;
     }
     
     if (time2 - time1 > 50) // Plus de 50ms semble excessif pour 1ms d'attente
     {
         printf(" > FAIL: get_time() precision seems off\n");
-        return !1;
+        return false;
     }
     
-    return !0;
+    return true;
 }
 
 static int test_time_diff(void)
@@ -46,7 +47,7 @@ static int test_time_diff(void)
     if (diff != 500)
     {
         printf(" > FAIL: time_diff(1000, 1500) = %lld, expected 500\n", diff);
-        return !1;
+        return false;
     }
     
     // Test avec des valeurs réelles
@@ -58,10 +59,10 @@ static int test_time_diff(void)
     if (diff < 3 || diff > 20) // Entre 3ms et 20ms acceptable
     {
         printf(" > FAIL: time_diff real test = %lld ms, expected ~5ms\n", diff);
-        return !1;
+        return false;
     }
     
-    return !0;
+    return true;
 }
 
 static int test_ft_usleep_precision(void)
@@ -75,10 +76,10 @@ static int test_ft_usleep_precision(void)
     if (actual < 7 || actual > 15)
     {
         printf(" > FAIL: ft_usleep(10) took %lld ms\n", actual);
-        return !1;
+        return false;
     }
     
-    return !0;
+    return true;
 }
 
 int test7(void)

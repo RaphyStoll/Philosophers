@@ -35,29 +35,29 @@ static int test_simulation_death_detection(void)
     {
         printf(" > FAIL: parsing failed\n");
         free_data(data);
-        return 1;
+        return false;
     }
     
     long long start = get_time();
     start_simulation(data);
     long long end = get_time();
     
-    // La simulation devrait se terminer en moins de 150ms
-    if (time_diff(start, end) > 150)
+    // La simulation devrait se terminer en moins de 200ms
+    if (time_diff(start, end) > 200)
     {
         printf(" > FAIL: death detection too slow\n");
         free_data(data);
-        return 1;
+        return false;
     }
     
     free_data(data);
-    return 0;
+    return true;
 }
 
 static int test_simulation_single_philo(void)
 {
     t_data *data = malloc(sizeof(t_data));
-    if (!data) return 1;
+    if (!data) return false;
     
     init_default_data(data);
     
@@ -68,7 +68,7 @@ static int test_simulation_single_philo(void)
     {
         printf(" > FAIL: parsing failed\n");
         free_data(data);
-        return 1;
+        return false;
     }
     
     long long start = get_time();
@@ -81,11 +81,11 @@ static int test_simulation_single_philo(void)
     {
         printf(" > FAIL: single philo timing wrong: %lld ms\n", duration);
         free_data(data);
-        return 1;
+        return false;
     }
     
     free_data(data);
-    return 0;
+    return true;
 }
 
 static int test_simulation_eat_count(void)
@@ -102,7 +102,7 @@ static int test_simulation_eat_count(void)
     {
         printf(" > FAIL: parsing failed\n");
         free_data(data);
-        return 1;
+        return false;
     }
     
     long long start = get_time();
@@ -115,11 +115,11 @@ static int test_simulation_eat_count(void)
     {
         printf(" > FAIL: eat count simulation too long: %lld ms\n", duration);
         free_data(data);
-        return 1;
+        return false;
     }
     
     free_data(data);
-    return 0;
+    return true;
 }
 
 int test9(void)

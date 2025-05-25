@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   print.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raphaelferreira <raphaelferreira@studen    +#+  +:+       +#+        */
+/*   By: raphalme <raphalme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/24 16:52:41 by raphaelferr       #+#    #+#             */
-/*   Updated: 2025/05/24 16:52:43 by raphaelferr      ###   ########.fr       */
+/*   Created: 2025/05/25 14:05:04 by raphalme          #+#    #+#             */
+/*   Updated: 2025/05/25 16:17:02 by raphalme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,10 +26,8 @@ void	print_status(t_philo *philo, char *status)
 {
 	long long	timestamp;
 
-	if (!is_simulation_running(philo->data))
-		return ;
 	pthread_mutex_lock(&philo->data->mutex->print_lock);
-	if (is_simulation_running(philo->data))
+	if (!philo->data->simulation_end)
 	{
 		timestamp = get_time() - philo->data->start_time;
 		printf("%lld %d %s\n", timestamp, philo->id, status);

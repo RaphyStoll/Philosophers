@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   init.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: raphalme <raphalme@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/25 14:03:59 by raphalme          #+#    #+#             */
+/*   Updated: 2025/05/25 16:12:21 by raphalme         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
 
 static bool	init_mutexes(t_data *data)
@@ -63,7 +75,7 @@ static t_philo	*init_philo(t_data *data, int i)
 	new->id = i + 1;
 	new->meals_eaten = 0;
 	new->data = data;
-	new->last_meal = 0;
+	new->last_meal = data->start_time;
 	new->left_fork = &data->forks[i];
 	new->right_fork = &data->forks[(i + 1) % data->nb_philo];
 	new->next = NULL;

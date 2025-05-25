@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mini_libft.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raphaelferreira <raphaelferreira@studen    +#+  +:+       +#+        */
+/*   By: raphalme <raphalme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/24 16:52:14 by raphaelferr       #+#    #+#             */
-/*   Updated: 2025/05/24 16:56:19 by raphaelferr      ###   ########.fr       */
+/*   Created: 2025/05/25 14:04:35 by raphalme          #+#    #+#             */
+/*   Updated: 2025/05/25 14:04:37 by raphalme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ int	ft_strcmp(char *s1, char *s2)
 
 bool	is_digit(char *str)
 {
-	int i;
+	int	i;
 
 	if (!str || str[0] == '\0')
 		return (false);

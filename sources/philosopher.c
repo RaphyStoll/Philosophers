@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philosopher.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raphaelferreira <raphaelferreira@studen    +#+  +:+       +#+        */
+/*   By: raphalme <raphalme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/24 16:52:36 by raphaelferr       #+#    #+#             */
-/*   Updated: 2025/05/24 22:57:52 by raphaelferr      ###   ########.fr       */
+/*   Created: 2025/05/25 14:04:59 by raphalme          #+#    #+#             */
+/*   Updated: 2025/05/25 16:25:49 by raphalme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,8 @@ void	*philosopher_routine(void *arg)
 	t_philo	*philo;
 
 	philo = (t_philo *)arg;
-	safe_set_last_meal(philo, philo->data->start_time);
-	if (philo->id % 2 == 0)
-		ft_usleep(philo->data->time_to_eat / 2);
-	while (is_simulation_running(philo->data))
+
+	while (!philo->data->simulation_end)
 	{
 		if (philo->data->nb_philo == 1)
 		{
@@ -29,11 +27,7 @@ void	*philosopher_routine(void *arg)
 			break ;
 		}
 		philo_eat(philo);
-		if (!is_simulation_running(philo->data))
-			break ;
 		philo_sleep(philo);
-		if (!is_simulation_running(philo->data))
-			break ;
 		philo_think(philo);
 	}
 	return (NULL);

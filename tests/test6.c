@@ -18,7 +18,7 @@ void free_data(t_data *data);
 static int test_valid_args_basic(void)
 {
     t_data *data = malloc(sizeof(t_data));
-    if (!data) return !1;
+    if (!data) return false;
     
     init_default_data(data);
     const char *argv[] = {"./philo", "4", "410", "200", "200"};
@@ -29,7 +29,7 @@ static int test_valid_args_basic(void)
     {
         printf(" > FAIL: parsing valid basic args failed\n");
         free_data(data);
-        return !1;
+        return false;
     }
     
     if (data->nb_philo != 4 || data->time_to_die != 410 || 
@@ -37,17 +37,17 @@ static int test_valid_args_basic(void)
     {
         printf(" > FAIL: parsed values incorrect\n");
         free_data(data);
-        return !1;
+        return false;
     }
     
     free_data(data);
-    return !0;
+    return true;
 }
 
 static int test_valid_args_with_eat_count(void)
 {
     t_data *data = malloc(sizeof(t_data));
-    if (!data) return !1;
+    if (!data) return false;
     
     init_default_data(data);
     const char *argv[] = {"./philo", "5", "800", "200", "200", "7"};
@@ -58,24 +58,24 @@ static int test_valid_args_with_eat_count(void)
     {
         printf(" > FAIL: parsing with eat count failed\n");
         free_data(data);
-        return !1;
+        return false;
     }
     
     if (data->must_eat_count != 7)
     {
         printf(" > FAIL: must_eat_count not set correctly\n");
         free_data(data);
-        return !1;
+        return false;
     }
     
     free_data(data);
-    return !0;
+    return true;
 }
 
 static int test_invalid_args_count(void)
 {
     t_data *data = malloc(sizeof(t_data));
-    if (!data) return !1;
+    if (!data) return false;
     
     init_default_data(data);
     
@@ -85,7 +85,7 @@ static int test_invalid_args_count(void)
     {
         printf(" > FAIL: should reject too few arguments\n");
         free_data(data);
-        return !1;
+        return false;
     }
     
     // Trop d'arguments
@@ -94,17 +94,17 @@ static int test_invalid_args_count(void)
     {
         printf(" > FAIL: should reject too many arguments\n");
         free_data(data);
-        return !1;
+        return false;
     }
     
     free_data(data);
-    return !0;
+    return true;
 }
 
 static int test_invalid_values(void)
 {
     t_data *data = malloc(sizeof(t_data));
-    if (!data) return !1;
+    if (!data) return false;
     
     init_default_data(data);
     
@@ -114,7 +114,7 @@ static int test_invalid_values(void)
     {
         printf(" > FAIL: should reject negative numbers\n");
         free_data(data);
-        return !1;
+        return false;
     }
     
     // Zéro
@@ -123,7 +123,7 @@ static int test_invalid_values(void)
     {
         printf(" > FAIL: should reject zero philosophers\n");
         free_data(data);
-        return !1;
+        return false;
     }
     
     // Non-numérique
@@ -132,17 +132,17 @@ static int test_invalid_values(void)
     {
         printf(" > FAIL: should reject non-numeric values\n");
         free_data(data);
-        return !1;
+        return false;
     }
     
     free_data(data);
-    return !0;
+    return true;
 }
 
 static int test_edge_values(void)
 {
     t_data *data = malloc(sizeof(t_data));
-    if (!data) return !1;
+    if (!data) return false;
     
     init_default_data(data);
     
@@ -152,7 +152,7 @@ static int test_edge_values(void)
     {
         printf(" > FAIL: should reject too many philosophers (>200)\n");
         free_data(data);
-        return !1;
+        return false;
     }
     
     // Limite acceptable
@@ -161,11 +161,11 @@ static int test_edge_values(void)
     {
         printf(" > FAIL: should accept 200 philosophers\n");
         free_data(data);
-        return !1;
+        return false;
     }
     
     free_data(data);
-    return !0;
+    return true;
 }
 
 int test6(void)

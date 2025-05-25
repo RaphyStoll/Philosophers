@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   time.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raphaelferreira <raphaelferreira@studen    +#+  +:+       +#+        */
+/*   By: raphalme <raphalme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/24 16:52:54 by raphaelferr       #+#    #+#             */
-/*   Updated: 2025/05/24 17:08:40 by raphaelferr      ###   ########.fr       */
+/*   Created: 2025/05/25 14:05:20 by raphalme          #+#    #+#             */
+/*   Updated: 2025/05/25 16:25:08 by raphalme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,11 +26,7 @@ long long	time_diff(long long start, long long end)
 	return (end - start);
 }
 
-void	ft_usleep(long long time)
+void ft_usleep(long long time)
 {
-	long long	start;
-
-	start = get_time();
-	while (time_diff(start, get_time()) < time)
-		usleep(10);
+    usleep(time * 1000);
 }

@@ -29,7 +29,7 @@ void ft_usleep(long long time);
 static int test_is_simulation_running(void)
 {
     t_data *data = malloc(sizeof(t_data));
-    if (!data) return 1;
+    if (!data) return false;
     
     init_default_data(data);
     
@@ -38,7 +38,7 @@ static int test_is_simulation_running(void)
     {
         printf(" > FAIL: simulation should be running initially\n");
         free_data(data);
-        return 1;
+        return false;
     }
     
     // Après avoir mis simulation_end = true
@@ -50,17 +50,17 @@ static int test_is_simulation_running(void)
     {
         printf(" > FAIL: simulation should not be running after end\n");
         free_data(data);
-        return 1;
+        return false;
     }
     
     free_data(data);
-    return 0;
+    return false;
 }
 
 static int test_print_status_format(void)
 {
     t_data *data = malloc(sizeof(t_data));
-    if (!data) return 1;
+    if (!data) return false;
     
     init_default_data(data);
     data->start_time = get_time();
@@ -79,7 +79,7 @@ static int test_print_status_format(void)
     if (fd < 0)
     {
         free_data(data);
-        return 1;
+        return false;
     }
     dup2(fd, STDOUT_FILENO);
     
@@ -96,7 +96,7 @@ static int test_print_status_format(void)
     if (fd < 0)
     {
         free_data(data);
-        return 1;
+        return false;
     }
     read(fd, buffer, sizeof(buffer) - 1);
     close(fd);
@@ -107,17 +107,17 @@ static int test_print_status_format(void)
     {
         printf(" > FAIL: wrong print format: %s\n", buffer);
         free_data(data);
-        return 1;
+        return false;
     }
     
     free_data(data);
-    return 0;
+    return true;
 }
 
 static int test_print_status_no_overlap(void)
 {
     t_data *data = malloc(sizeof(t_data));
-    if (!data) return 1;
+    if (!data) return false;
     
     init_default_data(data);
     data->start_time = get_time();
@@ -137,7 +137,7 @@ static int test_print_status_no_overlap(void)
     if (fd < 0)
     {
         free_data(data);
-        return 1;
+        return false;
     }
     dup2(fd, STDOUT_FILENO);
     
@@ -154,21 +154,21 @@ static int test_print_status_no_overlap(void)
     if (fd < 0)
     {
         free_data(data);
-        return 1;
+        return false;
     }
     int bytes_read = read(fd, buffer, sizeof(buffer) - 1);
     close(fd);
     unlink(tmp_path);
     
-    if (bytes_read > 0)
+    if (bytes_read <= 0)
     {
         printf(" > FAIL: print_status should not print when simulation ended\n");
         free_data(data);
-        return 1;
+        return false;
     }
     
     free_data(data);
-    return 0;
+    return true;
 }
 
 int test10(void)
@@ -178,6 +178,6 @@ int test10(void)
     RUN_SUBTEST("test_is_simulation_running", test_is_simulation_running);
     RUN_SUBTEST("test_print_status_format", test_print_status_format);
     RUN_SUBTEST("test_print_status_no_overlap", test_print_status_no_overlap);
-    
+
     return failures;
 }

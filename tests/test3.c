@@ -10,6 +10,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <stdbool.h>
 #include "test.h"
 
 int error_msg(const char *msg);
@@ -20,7 +21,7 @@ static int test_error_msg_output(const char *input)
 	int saved_stderr = dup(STDERR_FILENO);
 	int fd = open(tmp_path, O_CREAT | O_WRONLY | O_TRUNC, 0644);
 	if (fd < 0)
-		return (!1);
+		return (false);
 	dup2(fd, STDERR_FILENO);
 	error_msg(input);
 	fflush(stderr);
@@ -32,7 +33,7 @@ static int test_error_msg_output(const char *input)
 	char buffer[1024] = {0};
 	fd = open(tmp_path, O_RDONLY);
 	if (fd < 0)
-		return (!1);
+		return (false);
 	read(fd, buffer, sizeof(buffer) - 1);
 	close(fd);
 	unlink(tmp_path); // Supprime le fichier
@@ -45,9 +46,9 @@ static int test_error_msg_output(const char *input)
 	{
 		printf(" > FAIL: error_msg(\"%s\") wrote \"%s\" (expected \"%s\")\n",
 			input, buffer, expected);
-		return (!1);
+		return (false);
 	}
-	return (!0);
+	return (true);
 }
 
 static int base_string(void)
