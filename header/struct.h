@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   struct.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raphalme <raphalme@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raphaelferreira <raphaelferreira@studen    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/25 13:56:50 by raphalme          #+#    #+#             */
-/*   Updated: 2025/05/25 13:56:52 by raphalme         ###   ########.fr       */
+/*   Updated: 2025/05/25 20:02:01 by raphaelferr      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,8 @@ typedef struct s_mutexes
 	pthread_mutex_t		death_mutex;
 	bool				fed_mutex_initialized;
 	pthread_mutex_t		fed_mutex;
+	bool				meal_mutex_initialized;
+	pthread_mutex_t		meal_mutex;
 	bool				data_mutex_initialized;
 	pthread_mutex_t		data_mutex;
 }	t_mutexes;

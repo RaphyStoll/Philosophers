@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philosopher.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raphalme <raphalme@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raphaelferreira <raphaelferreira@studen    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/25 14:04:59 by raphalme          #+#    #+#             */
-/*   Updated: 2025/05/25 16:25:49 by raphalme         ###   ########.fr       */
+/*   Updated: 2025/05/25 21:17:16 by raphaelferr      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,18 +15,24 @@
 void	*philosopher_routine(void *arg)
 {
 	t_philo	*philo;
+	bool	running;
 
 	philo = (t_philo *)arg;
-
-	while (!philo->data->simulation_end)
+	if (philo->id % 2 == 0)
+		ft_usleep(philo->data->time_to_eat / 10);
+	while (1)
 	{
-		if (philo->data->nb_philo == 1)
-		{
-			print_status(philo, "has taken a fork");
-			ft_usleep(philo->data->time_to_die);
+		pthread_mutex_lock(&philo->data->mutex->death_mutex);
+		running = !philo->data->simulation_end;
+		pthread_mutex_unlock(&philo->data->mutex->death_mutex);
+		if (!running)
 			break ;
-		}
 		philo_eat(philo);
+		pthread_mutex_lock(&philo->data->mutex->death_mutex);
+		running = !philo->data->simulation_end;
+		pthread_mutex_unlock(&philo->data->mutex->death_mutex);
+		if (!running)
+			break ;
 		philo_sleep(philo);
 		philo_think(philo);
 	}

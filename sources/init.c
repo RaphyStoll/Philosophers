@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raphalme <raphalme@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raphaelferreira <raphaelferreira@studen    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/25 14:03:59 by raphalme          #+#    #+#             */
-/*   Updated: 2025/05/25 16:12:21 by raphalme         ###   ########.fr       */
+/*   Updated: 2025/05/29 19:11:56 by raphaelferr      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ static bool	init_mutexes(t_data *data)
 	data->mutex->death_mutex_initialized = false;
 	data->mutex->fed_mutex_initialized = false;
 	data->mutex->data_mutex_initialized = false;
+	data->mutex->meal_mutex_initialized = false;
 	if (pthread_mutex_init(&data->mutex->print_lock, NULL) != 0)
 		return (free_data(data), error_msg("Error: print_lock init failed"));
 	data->mutex->print_lock_initialized = true;
@@ -32,6 +33,8 @@ static bool	init_mutexes(t_data *data)
 	data->mutex->fed_mutex_initialized = true;
 	if (pthread_mutex_init(&data->mutex->data_mutex, NULL) != 0)
 		return (free_data(data), error_msg("Error: data_mutex init failed"));
+	if (pthread_mutex_init(&data->mutex->meal_mutex, NULL) != 0)
+		return (free_data(data), error_msg("Error: meal_mutex init failed"));
 	data->mutex->data_mutex_initialized = true;
 	return (true);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   monitor.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raphalme <raphalme@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raphaelferreira <raphaelferreira@studen    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/25 14:04:42 by raphalme          #+#    #+#             */
-/*   Updated: 2025/05/25 16:33:48 by raphalme         ###   ########.fr       */
+/*   Updated: 2025/05/29 19:13:14 by raphaelferr      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ static void	end_simulation(t_data *data)
 	pthread_mutex_unlock(&data->mutex->death_mutex);
 }
 
-static bool	check_death(t_philo *philo)
+static	bool	check_death(t_philo *philo)
 {
 	long long	time_since_meal;
 	long long	current_time;
@@ -43,11 +43,11 @@ static bool	check_death(t_philo *philo)
 	return (false);
 }
 
-static bool all_philosophers_fed(t_data *data)
+static bool	all_philosophers_fed(t_data *data)
 {
-	t_philo *current;
-	int fed_count;
-	int i;
+	t_philo	*current;
+	int		fed_count;
+	int		i;
 
 	if (data->must_eat_count == -1)
 		return (false);
@@ -95,7 +95,7 @@ void	*monitor_routine(void *arg)
 				return (NULL);
 			current = current->next;
 		}
-		usleep(1000);
+		usleep(2000);
 	}
 	return (NULL);
 }

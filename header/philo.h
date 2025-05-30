@@ -6,7 +6,7 @@
 /*   By: raphaelferreira <raphaelferreira@studen    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 01:24:57 by raphaelferr       #+#    #+#             */
-/*   Updated: 2025/05/24 23:12:38 by raphaelferr      ###   ########.fr       */
+/*   Updated: 2025/05/29 19:04:34 by raphaelferr      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ void		free_data(t_data *data);
 void		free_flags(t_flags *flags);
 void		free_philo(t_philo *philo);
 void		free_mutexes(t_mutexes *m);
+void		free_mutex2(t_mutexes *m);
 
 //! utils
 bool		error_msg(const char *msg);
@@ -56,6 +57,7 @@ void		ft_usleep(long long time);
 //! print
 void		print_status(t_philo *philo, char *status);
 bool		is_simulation_running(t_data *data);
+void		print_status_w(t_philo *philo, const char *msg);
 
 //! philosopher
 void		*philosopher_routine(void *arg);

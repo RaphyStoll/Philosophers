@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   time.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raphalme <raphalme@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raphaelferreira <raphaelferreira@studen    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/25 14:05:20 by raphalme          #+#    #+#             */
-/*   Updated: 2025/05/25 16:25:08 by raphalme         ###   ########.fr       */
+/*   Updated: 2025/05/29 19:02:53 by raphaelferr      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,11 @@ long long	time_diff(long long start, long long end)
 	return (end - start);
 }
 
-void ft_usleep(long long time)
+void	ft_usleep(long long time)
 {
-    usleep(time * 1000);
+	long long	end;
+
+	end = get_time() + time;
+	while (get_time() < end)
+		usleep(10);
 }

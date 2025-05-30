@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   simulation.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raphalme <raphalme@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raphaelferreira <raphaelferreira@studen    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/25 14:05:16 by raphalme          #+#    #+#             */
-/*   Updated: 2025/05/25 16:10:52 by raphalme         ###   ########.fr       */
+/*   Updated: 2025/05/29 19:09:48 by raphaelferr      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,14 +54,11 @@ bool	start_simulation(t_data *data)
 	data->philos = create_philos(data);
 	if (!create_threads(data, threads))
 		return (free(threads), false);
-	if(!data->philos)
+	if (!data->philos)
 		return (free(threads), false);
 	if (pthread_create(&monitor_thread, NULL, monitor_routine, data) != 0)
-	{
-		join_threads(data, threads);
-		free(threads);
-		return (error_msg("Error: monitor thread creation failed"));
-	}
+		return (join_threads(data, threads), free(threads),
+			!error_msg("Error: monitor thread creation failed"));
 	join_threads(data, threads);
 	pthread_join(monitor_thread, NULL);
 	i = 0;

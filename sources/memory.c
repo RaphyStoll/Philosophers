@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   memory.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raphalme <raphalme@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raphaelferreira <raphaelferreira@studen    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/25 14:04:19 by raphalme          #+#    #+#             */
-/*   Updated: 2025/05/25 14:04:22 by raphalme         ###   ########.fr       */
+/*   Updated: 2025/05/29 19:12:29 by raphaelferr      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,10 +71,20 @@ void	free_mutexes(t_mutexes *m)
 		m->fed_mutex_initialized = false;
 		pthread_mutex_destroy(&m->fed_mutex);
 	}
+	free_mutex2(m);
+}
+
+void	free_mutex2(t_mutexes *m)
+{
 	if (m->data_mutex_initialized)
 	{
 		m->data_mutex_initialized = false;
 		pthread_mutex_destroy(&m->data_mutex);
+	}
+	if (m->meal_mutex_initialized)
+	{
+		m->data_mutex_initialized = false;
+		pthread_mutex_destroy(&m->meal_mutex);
 	}
 	if (m)
 		free(m);
