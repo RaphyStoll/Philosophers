@@ -6,7 +6,7 @@
 /*   By: raphaelferreira <raphaelferreira@studen    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/25 14:03:59 by raphalme          #+#    #+#             */
-/*   Updated: 2025/05/29 19:11:56 by raphaelferr      ###   ########.fr       */
+/*   Updated: 2025/06/05 08:28:10 by raphaelferr      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ t_data	*init_default_data(t_data *data)
 	data->must_eat_count = -1;
 	data->forks = NULL;
 	data->philos = NULL;
-	data->start_time = 0;
+	data->start_time = get_time();
 	data->fed_count = 0;
 	data->is_dead = false;
 	data->simulation_end = false;

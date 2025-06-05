@@ -6,7 +6,7 @@
 /*   By: raphaelferreira <raphaelferreira@studen    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/25 14:05:16 by raphalme          #+#    #+#             */
-/*   Updated: 2025/05/29 19:09:48 by raphaelferr      ###   ########.fr       */
+/*   Updated: 2025/06/05 08:27:58 by raphaelferr      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,6 @@ bool	start_simulation(t_data *data)
 	threads = malloc(sizeof(pthread_t) * data->nb_philo);
 	if (!threads)
 		return (error_msg("Error: malloc threads failed"));
-	data->start_time = get_time();
 	data->philos = create_philos(data);
 	if (!create_threads(data, threads))
 		return (free(threads), false);
