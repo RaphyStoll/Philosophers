@@ -9,7 +9,7 @@ NAME_BONUS  = philo_bonus
 TEST_RUNNER = test_runner
 
 CC          = gcc
-CFLAGS      = -Wall -Wextra -Werror -g -Iheader -O3
+CFLAGS      = -Wall -Wextra -Werror -g -Iheader
 PTHREAD     = -lpthread
 
 INCLUDES        = -Iheader
