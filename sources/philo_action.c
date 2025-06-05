@@ -6,7 +6,7 @@
 /*   By: raphaelferreira <raphaelferreira@studen    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/25 14:04:52 by raphalme          #+#    #+#             */
-/*   Updated: 2025/05/29 19:11:37 by raphaelferr      ###   ########.fr       */
+/*   Updated: 2025/06/05 08:33:10 by raphaelferr      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,8 @@ void	philo_eat(t_philo *philo)
 {
 	long long	current_time;
 
+	current_time = get_time();
+    safe_set_last_meal(philo, current_time);
 	take_forks(philo);
 	pthread_mutex_lock(&philo->data->mutex->death_mutex);
 	if (philo->data->simulation_end)
