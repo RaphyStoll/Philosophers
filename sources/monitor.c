@@ -6,7 +6,7 @@
 /*   By: raphaelferreira <raphaelferreira@studen    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/25 14:04:42 by raphalme          #+#    #+#             */
-/*   Updated: 2025/05/29 19:13:14 by raphaelferr      ###   ########.fr       */
+/*   Updated: 2025/06/06 08:17:41 by raphaelferr      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,13 +30,13 @@ static	bool	check_death(t_philo *philo)
 	time_since_meal = current_time - last_meal;
 	if (time_since_meal >= philo->data->time_to_die)
 	{
-		pthread_mutex_lock(&philo->data->mutex->print_lock);
 		if (is_simulation_running(philo->data))
 		{
+			pthread_mutex_lock(&philo->data->mutex->print_lock);
 			printf("%lld %d died\n", current_time - philo->data->start_time,
 				philo->id);
+			pthread_mutex_unlock(&philo->data->mutex->print_lock);
 		}
-		pthread_mutex_unlock(&philo->data->mutex->print_lock);
 		end_simulation(philo->data);
 		return (true);
 	}
@@ -95,7 +95,7 @@ void	*monitor_routine(void *arg)
 				return (NULL);
 			current = current->next;
 		}
-		usleep(2000);
+		usleep(200);
 	}
 	return (NULL);
 }
