@@ -6,7 +6,7 @@
 /*   By: raphalme <raphalme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/25 14:04:11 by raphalme          #+#    #+#             */
-/*   Updated: 2025/06/05 15:00:37 by raphalme         ###   ########.fr       */
+/*   Updated: 2025/06/06 11:27:27 by raphalme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,8 @@ int	main(int argc, char **argv)
 	if (!parsing(data, argc, (const char **)argv))
 		return (free_data(data), 1);
 	if (data->nb_philo == 1)
-		return (printf("%lld 1 died\n", data->time_to_die), free_data(data), 0);
+		return (printf("0 1 has taken a fork\n"),
+			printf("%lld 1 died\n", data->time_to_die), free_data(data), 0);
 	if (!start_simulation(data))
 		return (free_data(data), 1);
 	free_data(data);

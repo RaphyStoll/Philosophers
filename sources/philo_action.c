@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo_action.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raphaelferreira <raphaelferreira@studen    +#+  +:+       +#+        */
+/*   By: raphalme <raphalme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/25 14:04:52 by raphalme          #+#    #+#             */
-/*   Updated: 2025/06/06 08:58:26 by raphaelferr      ###   ########.fr       */
+/*   Updated: 2025/06/06 10:09:44 by raphalme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,9 @@ void	drop_forks(t_philo *philo)
 
 void	take_forks(t_philo *philo)
 {
+	int flag;
+
+	flag = 0;
 	if (philo->id % 2 == 0)
 	{
 		pthread_mutex_lock(philo->right_fork);
@@ -41,18 +44,23 @@ void	take_forks(t_philo *philo)
 		pthread_mutex_lock(philo->left_fork);
 		pthread_mutex_lock(philo->right_fork);
 	}
+	pthread_mutex_lock(&philo->data->mutex->death_mutex);
 	if (!philo->data->simulation_end)
 	{
+		flag = 1;
+		pthread_mutex_unlock(&philo->data->mutex->death_mutex);
 		print_status_w(philo, "has taken a fork");
 		print_status_w(philo, "has taken a fork");
 	}
+	if (flag == 0)
+		pthread_mutex_unlock(&philo->data->mutex->death_mutex);
 }
 
 void	philo_eat(t_philo *philo)
 {
-	long long	current_time;
+	long long	c_t;
 
-	current_time = get_time();
+	c_t = get_time();
 	take_forks(philo);
 	pthread_mutex_lock(&philo->data->mutex->death_mutex);
 	if (philo->data->simulation_end)
@@ -62,14 +70,17 @@ void	philo_eat(t_philo *philo)
 		return ;
 	}
 	pthread_mutex_unlock(&philo->data->mutex->death_mutex);
-	current_time = get_time();
-	safe_set_last_meal(philo, current_time);
+	c_t = get_time();
+	safe_set_last_meal(philo, c_t);
 	safe_increment_meals(philo);
-	pthread_mutex_lock(&philo->data->mutex->print_lock);
+	pthread_mutex_lock(&philo->data->mutex->death_mutex);
 	if (!philo->data->simulation_end)
-		printf("%lld %d is eating\n", current_time - philo->data->start_time,
-			philo->id);
-	pthread_mutex_unlock(&philo->data->mutex->print_lock);
+	{
+		pthread_mutex_lock(&philo->data->mutex->print_lock);
+		printf("%lld %d is eating\n", c_t - philo->data->start_time, philo->id);
+			pthread_mutex_unlock(&philo->data->mutex->print_lock);
+	}
+	pthread_mutex_unlock(&philo->data->mutex->death_mutex);
 	ft_usleep(philo->data->time_to_eat);
 	drop_forks(philo);
 }

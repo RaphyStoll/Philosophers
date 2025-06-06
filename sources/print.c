@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   print.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raphaelferreira <raphaelferreira@studen    +#+  +:+       +#+        */
+/*   By: raphalme <raphalme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/25 14:05:04 by raphalme          #+#    #+#             */
-/*   Updated: 2025/05/29 19:12:08 by raphaelferr      ###   ########.fr       */
+/*   Updated: 2025/06/06 10:01:35 by raphalme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ void	print_status_w(t_philo *philo, const char *msg)
 {
 	long long	timestamp;
 
-	pthread_mutex_lock(&philo->data->mutex->print_lock);
+	pthread_mutex_lock(&philo->data->mutex->death_mutex);
 	if (!philo->data->simulation_end)
 	{
 		timestamp = get_time() - philo->data->start_time;
@@ -60,5 +60,5 @@ void	print_status_w(t_philo *philo, const char *msg)
 		write(1, msg, ft_strlen(msg));
 		write(1, "\n", 1);
 	}
-	pthread_mutex_unlock(&philo->data->mutex->print_lock);
+	pthread_mutex_unlock(&philo->data->mutex->death_mutex);
 }

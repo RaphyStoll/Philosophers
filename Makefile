@@ -8,7 +8,7 @@ NAME        = output/philo
 NAME_BONUS  = philo_bonus
 TEST_RUNNER = test_runner
 
-CC          = gcc
+CC          = cc
 CFLAGS      = -Wall -Wextra -Werror -g -Iheader
 PTHREAD     = -lpthread
 
