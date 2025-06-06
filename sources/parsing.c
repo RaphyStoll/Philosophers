@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raphalme <raphalme@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raphaelferreira <raphaelferreira@studen    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/25 14:04:48 by raphalme          #+#    #+#             */
-/*   Updated: 2025/05/25 15:46:26 by raphalme         ###   ########.fr       */
+/*   Updated: 2025/06/06 08:39:41 by raphaelferr      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ bool	arg_verif(t_data *data, const int argc, const char **argv)
 	int	i;
 
 	if (argc < 5 || argc > 6)
-		return (error_msg("Usage: ./philo nb_philo time_to_die time_to_eat"
+		return (error_msg("Usage: ./philo nb_philo time_to_die time_to_eat "
 				"time_to_sleep [must_eat_count]"));
 	i = 1;
 	while (i < argc)

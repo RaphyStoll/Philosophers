@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philosopher.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raphalme <raphalme@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raphaelferreira <raphaelferreira@studen    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/25 14:04:59 by raphalme          #+#    #+#             */
-/*   Updated: 2025/06/05 15:48:23 by raphalme         ###   ########.fr       */
+/*   Updated: 2025/06/06 09:20:40 by raphaelferr      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	*philosopher_routine(void *arg)
 	bool	running;
 
 	philo = (t_philo *)arg;
-	safe_set_last_meal(philo, get_time());
+
 	while (1)
 	{
 		pthread_mutex_lock(&philo->data->mutex->death_mutex);

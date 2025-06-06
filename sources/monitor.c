@@ -6,7 +6,7 @@
 /*   By: raphaelferreira <raphaelferreira@studen    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/25 14:04:42 by raphalme          #+#    #+#             */
-/*   Updated: 2025/06/06 08:17:41 by raphaelferr      ###   ########.fr       */
+/*   Updated: 2025/06/06 09:15:51 by raphaelferr      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ static	bool	check_death(t_philo *philo)
 	current_time = get_time();
 	last_meal = safe_get_last_meal(philo);
 	time_since_meal = current_time - last_meal;
-	if (time_since_meal >= philo->data->time_to_die)
+	if (time_since_meal > philo->data->time_to_die)
 	{
 		if (is_simulation_running(philo->data))
 		{
@@ -95,7 +95,7 @@ void	*monitor_routine(void *arg)
 				return (NULL);
 			current = current->next;
 		}
-		usleep(200);
+		usleep(500);
 	}
 	return (NULL);
 }

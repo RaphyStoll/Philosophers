@@ -6,7 +6,7 @@
 /*   By: raphaelferreira <raphaelferreira@studen    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/25 14:05:20 by raphalme          #+#    #+#             */
-/*   Updated: 2025/06/05 08:41:09 by raphaelferr      ###   ########.fr       */
+/*   Updated: 2025/06/06 09:17:44 by raphaelferr      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,19 +28,19 @@ long long	time_diff(long long start, long long end)
 
 void	ft_usleep(long long time)
 {
-	long long	start;
-	long long	elapsed;
+	long long start;
+    long long target;
 
-	start = get_time();
-	while (1)
-	{
-		elapsed = get_time() - start;
-		if (elapsed >= time)
-			break;
-		// Si on a plus de 1ms à attendre, on peut dormir un peu
-		if (time - elapsed > 1)
-			usleep(500);  // Dormir 0.5ms
-		else
-			usleep(1);    // Sinon, micro-sleep minimal
-	}
+    start = get_time();
+    target = start + time;
+    
+    while (get_time() < target)
+    {
+        if (target - get_time() > 10)
+            usleep(5000);
+        else if (target - get_time() > 1)
+            usleep(500);
+        else
+            usleep(10);
+    }
 }
