@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   monitor.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raphalme <raphalme@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raphaelferreira <raphaelferreira@studen    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/25 14:04:42 by raphalme          #+#    #+#             */
-/*   Updated: 2025/06/06 11:39:03 by raphalme         ###   ########.fr       */
+/*   Updated: 2025/06/10 06:41:57 by raphaelferr      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,7 @@ void	*monitor_routine(void *arg)
 				return (NULL);
 			current = current->next;
 		}
-		usleep(1000);
+		usleep(10);
 	}
 	return (NULL);
 }
